@@ -1,8 +1,8 @@
 <!doctype html><html lang="ja"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ふるさと納税 × 住宅ローン控除 シミュレーション（v7.5.2 patched）</title>
-<meta name="description" content="年収・年齢・居住地・住宅ローン条件から、ふるさと納税の目安上限を試算。">
-<link rel="stylesheet" href="styles.css?v=7.5.2p">
+<title>ふるさと納税 × 住宅ローン控除 シミュレーション（精確・単一画面 v7.5.2）</title>
+<meta name="description" content="精確版のみを単一画面で提供。年収・年齢・居住地・住宅ローン条件から、ふるさと納税の限度額を推定します。">
+<link rel="stylesheet" href="styles.css?v=7.5.2sp">
 <!-- GA4 -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-YS6NM3C8KG"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)};gtag('js',new Date());gtag('config','G-YS6NM3C8KG');</script>
@@ -12,27 +12,19 @@
 <header class="wrap header-row">
   <div class="left">
     <h1>ふるさと納税 × 住宅ローン控除 シミュレーション</h1>
-    <nav class="tabs">
-      <button class="active" data-tab="simple">簡単版</button>
-      <button data-tab="precise">精確版</button>
-      <button data-tab="plain">住宅ローンなし版</button>
-    </nav>
   </div>
   <div class="right">
-    <!-- 1) 全内容消去ボタンを小型・差別化 -->
     <button id="btn-reset" class="reset-ghost" title="入力をすべて消去">全内容消去</button>
   </div>
 </header>
 
 <main class="wrap">
-
-  <!-- 簡単版 -->
-  <section id="tab-simple" class="tab active">
+  <section id="precise-single">
+    <!-- 1. 居住地 -->
     <div class="grid2">
       <div class="field">
         <div class="label-row"><span class="title">都道府県</span><span class="meta"><span class="req">必須</span></span></div>
-        <!-- 2) 東京都をデフォルト選択 -->
-        <select id="s1-pref">
+        <select id="pref">
           <option>北海道</option><option>青森県</option><option>岩手県</option><option>宮城県</option><option>秋田県</option>
           <option>山形県</option><option>福島県</option><option>茨城県</option><option>栃木県</option><option>群馬県</option>
           <option>埼玉県</option><option>千葉県</option><option selected>東京都</option><option>神奈川県</option>
@@ -40,258 +32,120 @@
       </div>
       <div class="field">
         <div class="label-row"><span class="title">市区町村（任意）</span></div>
-        <input id="s1-city" placeholder="例：横浜市 中区">
+        <input id="city" placeholder="例：横浜市 中区">
       </div>
     </div>
 
-    <div class="hint" id="s1-extra-hint">上乗せ率（所得割）（自動）：0%</div>
+    <div class="hint" id="extra-hint">上乗せ率（所得割）（自動）：0%</div>
 
-    <div class="grid2">
-      <div class="field">
-        <div class="label-row"><span class="title">年収（万円）</span><span class="meta"><span class="req">必須</span></span></div>
-        <input id="s1-salary" inputmode="numeric" placeholder="例：900">
-      </div>
-      <div class="field">
-        <div class="label-row"><span class="title">年齢</span><span class="meta"><span class="req">必須</span></span></div>
-        <input id="s1-age" inputmode="numeric" placeholder="例：40">
-      </div>
-    </div>
-
-    <div class="grid2">
-      <div class="field">
-        <!-- 3) 202203 を 2022-03 として解釈 -->
-        <div class="label-row"><span class="title">借入開始年月（手入力）</span><span class="meta"><span class="req">必須</span></span></div>
-        <input id="s1-start-ym" inputmode="numeric" placeholder="YYYY-MM または YYYYMM">
-      </div>
-      <div class="field">
-        <div class="label-row"><span class="title">借入総額（万円）</span><span class="meta"><span class="req">必須</span></span></div>
-        <input id="s1-principal" inputmode="numeric" placeholder="例：6000">
-      </div>
-    </div>
-
-    <div class="grid3">
-      <div class="field">
-        <div class="label-row"><span class="title">返済年数（年）</span><span class="meta"><span class="req">必須</span></span></div>
-        <input id="s1-years" inputmode="numeric" placeholder="例：35">
-      </div>
-      <div class="field">
-        <div class="label-row"><span class="title">年利（%）</span><span class="meta"><span class="req">必須</span></span></div>
-        <input id="s1-rate" inputmode="decimal" placeholder="例：0.8">
-      </div>
-      <div class="field">
-        <div class="label-row"><span class="title">返済方式</span><span class="meta"><span class="req">必須</span></span></div>
-        <select id="s1-method"><option>元利均等</option><option>元金均等</option></select>
-      </div>
-    </div>
-
-    <div class="grid3">
-      <div class="field">
-        <!-- 4) 住宅区分に「任意」を追加。8) 住宅区分の？は撤去 -->
-        <div class="label-row"><span class="title">住宅区分（任意）</span></div>
-        <select id="s1-cat"><option value="" selected>任意</option><option>認定</option><option>ZEH</option><option>省エネ</option><option>その他</option></select>
-      </div>
-      <div class="field">
-        <div class="label-row"><span class="title">新築・中古</span></div>
-        <select id="s1-newused"><option>新築</option><option>中古</option></select>
-      </div>
-      <!-- 9) 子育て・若者夫婦ブロックを再設計（クリックで説明表示） -->
-      <div class="field child-block">
-        <div class="label-row">
-          <span class="title">子育て・若者夫婦（任意）</span>
-          <!-- 7) ホバーではなくクリックで表示 -->
-          <button type="button" class="info" data-pop="s1-child-tip">?</button>
-        </div>
-        <label class="toggle"><input id="s1-child" type="checkbox"> 該当する</label>
-        <div id="s1-child-tip" class="popover" hidden>
-          子育て：18歳以下の子を扶養。若者夫婦：いずれかが39歳以下など。制度により細目が異なります。
-        </div>
-      </div>
-    </div>
-
-    <div class="field">
-      <div class="label-row"><span class="title">対象年</span><span class="meta"><span class="req">必須</span></span></div>
-      <input id="s1-target-y" inputmode="numeric" placeholder="例：2025">
-    </div>
-
-    <div class="actions">
-      <button id="s1-calc" class="primary">ふるさと納税限度額計算</button>
-    </div>
-    <div class="result">
-      <div class="big" id="s1-dmax"></div>
-      <button class="more" id="s1-more" aria-expanded="false">詳細を見る</button>
-      <div class="details" id="s1-details" style="display:none"></div>
-      <div class="disclaimer">※ 本シミュレーションは概算です。実際の控除・上限は税制・個別要件等により異なる場合があります。</div>
-    </div>
-  </section>
-
-  <!-- 精確版 -->
-  <section id="tab-precise" class="tab">
-    <div class="grid2">
-      <div class="field">
-        <div class="label-row"><span class="title">都道府県</span><span class="meta"><span class="req">必須</span></span></div>
-        <select id="s2-pref">
-          <option>北海道</option><option>青森県</option><option>岩手県</option><option>宮城県</option><option>秋田県</option>
-          <option>山形県</option><option>福島県</option><option>茨城県</option><option>栃木県</option><option>群馬県</option>
-          <option>埼玉県</option><option>千葉県</option><option selected>東京都</option><option>神奈川県</option>
-        </select>
-      </div>
-      <div class="field">
-        <div class="label-row"><span class="title">市区町村（任意）</span></div>
-        <input id="s2-city" placeholder="例：横浜市 中区">
-      </div>
-    </div>
-
+    <!-- 2. 基本情報 -->
     <div class="grid3">
       <div class="field">
         <div class="label-row"><span class="title">年収（万円）</span><span class="meta"><span class="req">必須</span></span></div>
-        <input id="s2-salary" inputmode="numeric" placeholder="例：900">
+        <input id="salary" inputmode="numeric" placeholder="例：900">
       </div>
       <div class="field">
         <div class="label-row"><span class="title">年齢</span><span class="meta"><span class="req">必須</span></span></div>
-        <input id="s2-age" inputmode="numeric" placeholder="例：40">
+        <input id="age" inputmode="numeric" placeholder="例：40">
       </div>
       <div class="field">
         <div class="label-row"><span class="title">対象年</span><span class="meta"><span class="req">必須</span></span></div>
-        <input id="s2-target-y" inputmode="numeric" placeholder="例：2025">
+        <input id="targetY" inputmode="numeric" placeholder="例：2025">
       </div>
     </div>
 
+    <!-- 3. 借入情報（年月は最後に年末残高を計算する前提で使う） -->
     <div class="grid3">
       <div class="field">
-        <!-- 10) 表記統一：年末残高（自動計算）（円） -->
-        <div class="label-row"><span class="title">年末残高（自動計算）（円）</span><span class="meta"><label class="toggle nowrap">手入力 <input type="checkbox" id="s2-yb-manual"></label></span></div>
-        <input id="s2-yearend-auto" readonly>
-        <input id="s2-yearend-man" class="alt" inputmode="numeric" placeholder="円（手入力）" style="display:none">
-      </div>
-      <div class="field">
         <div class="label-row"><span class="title">借入開始年月（手入力）</span><span class="meta"><span class="req">必須</span></span></div>
-        <input id="s2-start-ym" inputmode="numeric" placeholder="YYYY-MM または YYYYMM">
+        <input id="startYM" inputmode="numeric" placeholder="YYYY-MM または YYYYMM">
       </div>
       <div class="field">
         <div class="label-row"><span class="title">借入総額（万円）</span><span class="meta"><span class="req">必須</span></span></div>
-        <input id="s2-principal" inputmode="numeric" placeholder="例：6000">
+        <input id="principal" inputmode="numeric" placeholder="例：6000">
+      </div>
+      <div class="field">
+        <div class="label-row"><span class="title">返済年数（年）</span><span class="meta"><span class="req">必須</span></span></div>
+        <input id="years" inputmode="numeric" placeholder="例：35">
       </div>
     </div>
 
     <div class="grid3">
       <div class="field">
-        <div class="label-row"><span class="title">返済年数（年）</span><span class="meta"><span class="req">必須</span></span></div>
-        <input id="s2-years" inputmode="numeric" placeholder="例：35">
-      </div>
-      <div class="field">
         <div class="label-row"><span class="title">年利（%）</span><span class="meta"><span class="req">必須</span></span></div>
-        <input id="s2-rate" inputmode="decimal" placeholder="例：0.8">
+        <input id="rate" inputmode="decimal" placeholder="例：0.8">
       </div>
       <div class="field">
         <div class="label-row"><span class="title">返済方式</span><span class="meta"><span class="req">必須</span></span></div>
-        <select id="s2-method"><option>元利均等</option><option>元金均等</option></select>
+        <select id="method"><option>元利均等</option><option>元金均等</option></select>
+      </div>
+      <div class="field">
+        <!-- 住宅区分：任意オプション削除、? クリックで説明 -->
+        <div class="label-row">
+          <span class="title">住宅区分</span><span class="meta"><!-- not 必須表示（任意のまま） --><button type="button" class="info" data-pop="cat-tip">?</button></span>
+        </div>
+        <select id="cat">
+          <option value="" selected>— 選択なし —</option>
+          <option>認定</option><option>ZEH</option><option>省エネ</option><option>その他</option>
+        </select>
+        <div id="cat-tip" class="popover" hidden>
+          <b>住宅区分の目安</b><br>
+          認定：認定長期優良住宅・低炭素住宅など。<br>
+          ZEH：ネット・ゼロ・エネルギー・ハウス相当。<br>
+          省エネ：省エネ基準適合。<br>
+          その他：上記以外の一般的な住宅。
+        </div>
       </div>
     </div>
 
-    <div class="grid3">
-      <!-- 4) 任意を追加 -->
+    <div class="grid2">
       <div class="field">
-        <div class="label-row"><span class="title">住宅区分（任意）</span></div>
-        <select id="s2-cat"><option value="" selected>任意</option><option>認定</option><option>ZEH</option><option>省エネ</option><option>その他</option></select>
+        <div class="label-row"><span class="title">新築・中古（任意）</span></div>
+        <select id="newused"><option value="" selected>— 選択なし —</option><option>新築</option><option>中古</option></select>
       </div>
-      <div class="field">
-        <div class="label-row"><span class="title">新築・中古</span></div>
-        <select id="s2-newused"><option>新築</option><option>中古</option></select>
-      </div>
-      <!-- 9) 子育て・若者夫婦ブロック（クリック説明） -->
       <div class="field child-block">
         <div class="label-row">
           <span class="title">子育て・若者夫婦（任意）</span>
-          <button type="button" class="info" data-pop="s2-child-tip">?</button>
+          <button type="button" class="info" data-pop="child-tip">?</button>
         </div>
-        <label class="toggle"><input id="s2-child" type="checkbox"> 該当する</label>
-        <div id="s2-child-tip" class="popover" hidden>
+        <label class="toggle"><input id="child" type="checkbox"> 該当する</label>
+        <div id="child-tip" class="popover" hidden>
           子育て：18歳以下の子を扶養。若者夫婦：いずれかが39歳以下など。制度により細目が異なります。
         </div>
       </div>
     </div>
 
-    <div class="actions">
-      <button id="s2-calc" class="primary">ふるさと納税限度額計算</button>
-    </div>
-    <div class="result">
-      <div class="big" id="s2-dmax"></div>
-      <button class="more" id="s2-more" aria-expanded="false">詳細を見る</button>
-      <div class="details" id="s2-details" style="display:none"></div>
-      <div class="disclaimer">※ 本シミュレーションは概算です。実際の控除・上限は税制・個別要件等により異なる場合があります。</div>
-    </div>
-  </section>
-
-  <!-- ローンなし版 -->
-  <section id="tab-plain" class="tab">
-    <div class="grid2">
+    <!-- 住民税所得割額（自動計算） -->
+    <div class="grid1">
       <div class="field">
-        <div class="label-row"><span class="title">都道府県</span><span class="meta"><span class="req">必須</span></span></div>
-        <select id="s3-pref">
-          <option>北海道</option><option>青森県</option><option>岩手県</option><option>宮城県</option><option>秋田県</option>
-          <option>山形県</option><option>福島県</option><option>茨城県</option><option>栃木県</option><option>群馬県</option>
-          <option>埼玉県</option><option>千葉県</option><option selected>東京都</option><option>神奈川県</option>
-        </select>
-      </div>
-      <div class="field">
-        <div class="label-row"><span class="title">市区町村（任意）</span></div>
-        <input id="s3-city" placeholder="例：横浜市 中区">
+        <div class="label-row"><span class="title">住民税所得割額（自動計算）（調整控除前相当）（円）</span><span class="meta"><label class="toggle nowrap">手入力 <input type="checkbox" id="R-manual"></label></span></div>
+        <input id="R-auto" readonly>
+        <input id="R-man" class="alt" inputmode="numeric" placeholder="円（手入力）" style="display:none">
       </div>
     </div>
 
-    <div class="grid3">
+    <!-- 年末残高：最後に配置 -->
+    <div class="grid1">
       <div class="field">
-        <div class="label-row"><span class="title">年収（万円）</span><span class="meta"><span class="req">必須</span></span></div>
-        <input id="s3-salary" inputmode="numeric" placeholder="例：900">
-      </div>
-      <div class="field">
-        <div class="label-row"><span class="title">年齢</span><span class="meta"><span class="req">必須</span></span></div>
-        <input id="s3-age" inputmode="numeric" placeholder="例：40">
-      </div>
-      <div class="field">
-        <div class="label-row"><span class="title">市区町村の超過課税（所得割）（自動）</span><span class="meta"><label class="toggle nowrap">手入力 <input type="checkbox" id="s3-extra-manual"></label></span></div>
-        <input id="s3-extra-auto" readonly>
-        <input id="s3-muni-extra" class="alt" inputmode="decimal" placeholder="例：0.025% または 0.025 または 0.00025" style="display:none">
+        <div class="label-row"><span class="title">年末残高（自動計算）（円）</span><span class="meta"><label class="toggle nowrap">手入力 <input type="checkbox" id="yb-manual"></label></span></div>
+        <input id="yearend-auto" readonly>
+        <input id="yearend-man" class="alt" inputmode="numeric" placeholder="円（手入力）" style="display:none">
       </div>
     </div>
 
     <div class="actions">
-      <button id="s3-calc" class="primary">ふるさと納税限度額計算</button>
+      <button id="calc" class="primary">ふるさと納税限度額計算</button>
+      <div id="err" class="error-msg" style="display:none"></div>
     </div>
-    <div class="result">
-      <div class="big" id="s3-dmax"></div>
-      <button class="more" id="s3-more" aria-expanded="false">詳細を見る</button>
-      <div class="details" id="s3-details" style="display:none"></div>
+
+    <div class="result" id="resultBox">
+      <div class="big" id="dmax"></div>
+      <button class="more" id="more" aria-expanded="false">詳細を見る</button>
+      <div class="details" id="details" style="display:none"></div>
       <div class="disclaimer">※ 本シミュレーションは概算です。実際の控除・上限は税制・個別要件等により異なる場合があります。</div>
     </div>
   </section>
-
 </main>
 
-<button id="fbOpen" class="feedback-fab" title="改良リクエスト">改良リクエスト</button>
-<div id="fbMask" class="mask" style="display:none"></div>
-<div id="fbModal" class="modal" style="display:none" role="dialog" aria-modal="true">
-  <div class="modal-box">
-    <div class="modal-head"><h3>改良リクエスト</h3><button id="fbClose" class="x">×</button></div>
-    <div class="modal-body">
-      <form id="fbForm" novalidate>
-        <div class="row"><label>お名前（任意）</label><input name="name"></div>
-        <div class="row"><label>メール（任意）</label><input name="email" type="email"></div>
-        <div class="row"><label>ご要望　<span class="req">必須</span></label><textarea name="message" required></textarea></div>
-        <div class="row act"><button type="button" id="fbPreview">内容確認</button><span id="fbMsg" class="muted"></span></div>
-      </form>
-      <div id="fbConfirm" style="display:none">
-        <h4>内容確認</h4>
-        <div class="confirm">
-          <div><b>お名前</b></div><div id="c_name"></div>
-          <div><b>メール</b></div><div id="c_email"></div>
-          <div><b>ご要望</b></div><div id="c_message" style="white-space:pre-wrap"></div>
-        </div>
-        <div class="row act"><button id="fbSend">送信</button></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script src="app.js?v=7.5.2p"></script>
+<script src="app.js?v=7.5.2sp"></script>
 </body></html>

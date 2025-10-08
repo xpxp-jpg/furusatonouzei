@@ -1,5 +1,5 @@
 
-// v7.5.2 patched — apply 10 requested changes
+// single precise page (v7.5.2sp)
 const RATES={pref_income_extra_pct:{"神奈川県":0.025},muni_income_extra_pct:{"東京都":{"新宿区":0,"世田谷区":0},"神奈川県":{"横浜市":0}}};
 const NF=new Intl.NumberFormat('ja-JP');const J=v=>NF.format(Math.round(v||0));
 function sanitize(s){return (''+(s??'')).replace(/[,\s％%]/g,'').replace(/[－—–−]/g,'-')}
@@ -23,72 +23,43 @@ function yendBal(P,ratePct,sy,sm,ty,years,method){const r=ratePct/100/12,n=years
  const a=P*r*Math.pow(1+r,n)/(Math.pow(1+r,n)-1);for(let i=0;i<m;i++){const it=bal*r;bal-=a-it}return Math.max(0,bal)}
 
 function limitFs(tIncl,R,loanRes){const capA=.20*R,capB=Math.max(R-loanRes,0),d1=2000+capA/(.9-tIncl),d2=2000+capB/(1.0-tIncl);return{d1:Math.max(0,Math.floor(d1)),d2:Math.max(0,Math.floor(d2))}}
+function err(msg,els){const area=document.getElementById('err');area.textContent=msg;area.style.display='block';(els||[]).forEach(id=>document.getElementById(id).classList.add('error-input'))}
+function clearErr(){document.getElementById('err').style.display='none';document.querySelectorAll('.error-input').forEach(x=>x.classList.remove('error-input'))}
+function showResult(amt,html){const big=document.getElementById('dmax'),btn=document.getElementById('more'),det=document.getElementById('details'),box=document.getElementById('resultBox');big.textContent='ふるさと納税限度額：'+J(amt)+' 円';btn.onclick=()=>{const open=det.style.display==='none';det.style.display=open?'block':'none';btn.setAttribute('aria-expanded',open?'true':'false')};det.innerHTML=html;box.classList.add('show')}
+function showHint(){const pref=document.getElementById('pref').value,city=document.getElementById('city').value||'';document.getElementById('extra-hint').textContent='上乗せ率（所得割）（自動）：'+pctStr(rateExtra(pref,city))}
 
-function errBox(scope){let box=scope.querySelector('.error-msg');if(!box){box=document.createElement('div');box.className='error-msg';const actions=scope.querySelector('.actions');actions?.parentNode?.insertBefore(box,actions.nextSibling)}return box}
-function clearErrors(scope){scope.querySelectorAll('.error-input').forEach(x=>x.classList.remove('error-input'));const e=scope.querySelector('.error-msg');if(e)e.remove()}
-function setResult(prefix,amt,html){const big=document.getElementById(prefix+'-dmax'),btn=document.getElementById(prefix+'-more'),det=document.getElementById(prefix+'-details'),box=big.closest('.result');big.textContent='ふるさと納税限度額：'+J(amt)+' 円';btn.onclick=()=>{const open=det.style.display==='none';det.style.display=open?'block':'none';btn.setAttribute('aria-expanded',open?'true':'false')};det.innerHTML=html;box.classList.add('show')}
-
-function showHintSimple(){const pref=document.getElementById('s1-pref').value,city=document.getElementById('s1-city').value||'';document.getElementById('s1-extra-hint').textContent='上乗せ率（所得割）（自動）：'+pctStr(rateExtra(pref,city))}
-
-function computeSimple(){
-  const scope=document.getElementById('tab-simple'); clearErrors(scope);
-  const pref=document.getElementById('s1-pref').value, city=document.getElementById('s1-city').value||'';
-  const salary=num(document.getElementById('s1-salary').value), age=num(document.getElementById('s1-age').value);
-  const ym=document.getElementById('s1-start-ym').value||'', prMan=num(document.getElementById('s1-principal').value);
-  const years=num(document.getElementById('s1-years').value), rate=num(document.getElementById('s1-rate').value), method=document.getElementById('s1-method').value, ty=num(document.getElementById('s1-target-y').value);
-  const need=[]; if(!pref)need.push('都道府県'); if(!salary)need.push('年収'); if(!age)need.push('年齢'); if(!ok_ym(ym))need.push('借入開始年月'); if(!prMan)need.push('借入総額'); if(!years)need.push('返済年数'); if(!rate)need.push('年利'); if(!ty)need.push('対象年');
-  if(need.length){errBox(scope).textContent='入力不備：'+need.join('、')+' を確認してください。'; return;}
+function compute(){
+  clearErr();
+  const pref=document.getElementById('pref').value, city=document.getElementById('city').value||'';
+  const salary=num(document.getElementById('salary').value), age=num(document.getElementById('age').value), ty=num(document.getElementById('targetY').value);
+  const ym=document.getElementById('startYM').value||'', prMan=num(document.getElementById('principal').value);
+  const years=num(document.getElementById('years').value), rate=num(document.getElementById('rate').value), method=document.getElementById('method').value;
+  const need=[]; if(!pref)need.push('pref'); if(!salary)need.push('salary'); if(!age)need.push('age'); if(!ok_ym(ym))need.push('startYM'); if(!prMan)need.push('principal'); if(!years)need.push('years'); if(!rate)need.push('rate'); if(!ty)need.push('targetY');
+  if(need.length){err('入力不備：必須項目を確認してください。',need); return;}
   const {y:sy,m:sm}=parts(ym); const g=salary*10000; const tb=itTaxBase(g,age,0).tb; const tIncl=mrate(tb);
-  const soc=socIns(g,age), kyu=Math.floor(salDed(g)); const tRes=Math.max(0,g-kyu-soc-BASIC_RES); const R=Math.floor(tRes*(0.10+rateExtra(pref,city)/100.0));
-  const bal=yendBal(prMan*10000,rate,sy,sm,ty,years,method);
-  const cap=30000000, idx=ty-sy; if(idx<0||idx>=13){errBox(scope).textContent='対象年は控除期間外の可能性があります。';return;}
+  const soc=socIns(g,age), kyu=Math.floor(salDed(g)); const tRes=Math.max(0,g-kyu-soc-BASIC_RES);
+  const R=Math.floor(tRes*(0.10+rateExtra(pref,city)/100.0));
+  document.getElementById('R-auto').value=J(R);
+  const useR=document.getElementById('R-manual').checked; const Rv=useR?num(document.getElementById('R-man').value):R;
+  const bal=(function(){const man=document.getElementById('yb-manual').checked; if(man){return num(document.getElementById('yearend-man').value)} const v=yendBal(prMan*10000,rate,sy,sm,ty,years,method); document.getElementById('yearend-auto').value=J(v); return v;})();
+  const cap=30000000, idx=ty-sy; if(idx<0||idx>=13){err('対象年は控除期間外の可能性があります。',['targetY']);return;}
   const credit=Math.floor(Math.min(bal,cap)*0.007), used=Math.min(credit, itax(tb)), resCap=Math.min(Math.floor(tb*0.05),97500);
   const loanRes=Math.min(credit-used,resCap);
-  const lim=limitFs(tIncl,R,loanRes), D=Math.min(lim.d1,lim.d2);
-  setResult('s1',D,`年末残高（推定）：${J(bal)} 円 ／ 年間控除：${J(credit)} 円 ／ 住民税側控除：${J(loanRes)} 円<br>R：${J(R)} 円 ／ 上乗せ率：${pctStr(rateExtra(pref,city))}`);
+  const lim=limitFs(tIncl,Rv,loanRes), D=Math.min(lim.d1,lim.d2);
+  showResult(D,`年末残高：${J(bal)} 円 ／ 年間控除：${J(credit)} 円 ／ 住民税側控除：${J(loanRes)} 円<br>R：${J(Rv)} 円 ／ 上乗せ率：${pctStr(rateExtra(pref,city))}`);
 }
 
-function computePrecise(){
-  const scope=document.getElementById('tab-precise'); clearErrors(scope);
-  const pref=document.getElementById('s2-pref').value, city=document.getElementById('s2-city').value||'';
-  const salary=num(document.getElementById('s2-salary').value), age=num(document.getElementById('s2-age').value), ty=num(document.getElementById('s2-target-y').value);
-  const ym=document.getElementById('s2-start-ym').value||'', prMan=num(document.getElementById('s2-principal').value);
-  const years=num(document.getElementById('s2-years').value), rate=num(document.getElementById('s2-rate').value), method=document.getElementById('s2-method').value;
-  const need=[]; if(!pref)need.push('都道府県'); if(!salary)need.push('年収'); if(!age)need.push('年齢'); if(!ok_ym(ym))need.push('借入開始年月'); if(!prMan)need.push('借入総額'); if(!years)need.push('返済年数'); if(!rate)need.push('年利'); if(!ty)need.push('対象年');
-  if(need.length){errBox(scope).textContent='入力不備：'+need.join('、')+' を確認してください。'; return;}
-  const {y:sy,m:sm}=parts(ym); const g=salary*10000; const tb=itTaxBase(g,age,0).tb; const tIncl=mrate(tb);
-  const soc=socIns(g,age), kyu=Math.floor(salDed(g)); const tRes=Math.max(0,g-kyu-soc-BASIC_RES); const R=Math.floor(tRes*(0.10+rateExtra(pref,city)/100.0));
-  const bal=(function(){const man=document.getElementById('s2-yb-manual').checked; if(man){return num(document.getElementById('s2-yearend-man').value)} const v=yendBal(prMan*10000,rate,sy,sm,ty,years,method); document.getElementById('s2-yearend-auto').value=J(v); return v;})();
-  const cap=30000000, idx=ty-sy; if(idx<0||idx>=13){errBox(scope).textContent='対象年は控除期間外の可能性があります。';return;}
-  const credit=Math.floor(Math.min(bal,cap)*0.007), used=Math.min(credit, itax(tb)), resCap=Math.min(Math.floor(tb*0.05),97500);
-  const loanRes=Math.min(credit-used,resCap);
-  const lim=limitFs(tIncl,R,loanRes), D=Math.min(lim.d1,lim.d2);
-  setResult('s2',D,`年末残高：${J(bal)} 円 ／ 年間控除：${J(credit)} 円 ／ 住民税側控除：${J(loanRes)} 円<br>R：${J(R)} 円 ／ 上乗せ率：${pctStr(rateExtra(pref,city))}`);
-}
-
-function computePlain(){
-  const scope=document.getElementById('tab-plain'); clearErrors(scope);
-  const pref=document.getElementById('s3-pref').value, city=document.getElementById('s3-city').value||'';
-  const salary=num(document.getElementById('s3-salary').value), age=num(document.getElementById('s3-age').value);
-  const need=[]; if(!pref)need.push('都道府県'); if(!salary)need.push('年収'); if(!age)need.push('年齢'); if(need.length){errBox(scope).textContent='入力不備：'+need.join('、')+' を確認してください。'; return;}
-  const g=salary*10000; const tb=itTaxBase(g,age,0).tb; const tIncl=mrate(tb);
-  const soc=socIns(g,age), kyu=Math.floor(salDed(g)); const tRes=Math.max(0,g-kyu-soc-BASIC_RES); const R=Math.floor(tRes*(0.10+rateExtra(pref,city)/100.0));
-  const lim=limitFs(tIncl,R,0), D=Math.min(lim.d1,lim.d2);
-  setResult('s3',D,`R：${J(R)} 円 ／ 上乗せ率：${pctStr(rateExtra(pref,city))}`);
-}
-
-function selectTab(id){document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('active',b.dataset.tab===id));document.querySelectorAll('.tab').forEach(s=>s.classList.toggle('active',s.id==='tab-'+id));window.scrollTo({top:0,behavior:'smooth'})}
 function bindInfoPop(){document.querySelectorAll('.info').forEach(btn=>{btn.addEventListener('click',()=>{const id=btn.getAttribute('data-pop');const pop=document.getElementById(id);if(!pop)return;const show=pop.hasAttribute('hidden');document.querySelectorAll('.popover').forEach(p=>p.setAttribute('hidden',''));if(show)pop.removeAttribute('hidden');else pop.setAttribute('hidden','');});});document.addEventListener('click',e=>{if(!e.target.closest('.info')&&!e.target.closest('.popover')){document.querySelectorAll('.popover').forEach(p=>p.setAttribute('hidden',''))}})}
+function resetAll(){document.querySelectorAll('input').forEach(el=>{if(el.type==='checkbox'){el.checked=false}else el.value=''});document.querySelectorAll('select').forEach(el=>{if(el.id==='pref')el.value='東京都';else el.selectedIndex=0});document.getElementById('resultBox').classList.remove('show');clearErr();showHint()}
 
 function bind(){
-  document.querySelectorAll('.tabs button').forEach(b=> b.addEventListener('click',()=>selectTab(b.dataset.tab)));
-  document.getElementById('btn-reset').addEventListener('click',()=>{document.querySelectorAll('input').forEach(el=>{if(el.type==='checkbox'){el.checked=false}else el.value=''});document.querySelectorAll('select').forEach(el=>{if(el.id.endsWith('pref'))el.value='東京都';else el.selectedIndex=0});document.querySelectorAll('.result').forEach(r=>r.classList.remove('show'));document.querySelectorAll('.error-msg').forEach(e=>e.remove());showHintSimple();});
-  document.getElementById('s1-pref').addEventListener('input',showHintSimple);
-  document.getElementById('s1-city').addEventListener('input',showHintSimple);
-  document.getElementById('s1-calc').addEventListener('click',computeSimple);
-  document.getElementById('s2-calc').addEventListener('click',computePrecise);
-  document.getElementById('s3-calc').addEventListener('click',computePlain);
+  document.getElementById('pref').addEventListener('input',showHint);
+  document.getElementById('city').addEventListener('input',showHint);
+  document.getElementById('calc').addEventListener('click',compute);
+  document.getElementById('btn-reset').addEventListener('click',resetAll);
+  document.getElementById('R-manual').addEventListener('change',e=>{document.getElementById('R-man').style.display=e.target.checked?'block':'none'});
+  document.getElementById('yb-manual').addEventListener('change',e=>{document.getElementById('yearend-man').style.display=e.target.checked?'block':'none'});
   bindInfoPop();
-  showHintSimple();
+  showHint();
 }
 document.addEventListener('DOMContentLoaded',bind);
