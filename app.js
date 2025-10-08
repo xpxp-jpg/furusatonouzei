@@ -1,13 +1,11 @@
-// ------- Prefecture adjustments -------
+// ------- Prefecture adjustments (example: 神奈川県 +0.025%) -------
 const PREF_INCOME_LEVY_EXTRA = { "神奈川県": 0.00025 };
 
-// ------- Utils -------
-// Fallback when Intl.NumberFormat is unavailable (very old Android/iOS)
+// ------- Utils with Intl fallback -------
 const NUMFMT = (typeof Intl !== 'undefined' && Intl.NumberFormat)
   ? new Intl.NumberFormat('ja-JP')
   : { format: (n)=> String(Math.round(n||0)).replace(/\B(?=(\d{3})+(?!\d))/g, ',') };
 const fmtJPY = n => NUMFMT.format(Math.round(n||0));
-
 const parseNum = s => { s=(''+(s??'')).replace(/,/g,'').trim(); return s?Number(s):0; };
 const manToYen = s => parseNum(s)*10000;
 function bindComma(id){ const el=document.getElementById(id); if(!el) return;
@@ -17,7 +15,7 @@ function bindComma(id){ const el=document.getElementById(id); if(!el) return;
  's2-salary','s2-age','s2-start-y','s2-start-m','s2-principal','s2-years','s2-rate','s2-target-y','s2-real','s2-side','s2-itax','s2-muni-extra',
  's3-salary','s3-age','s3-real','s3-side','s3-muni-extra'].forEach(bindComma);
 
-// ------- Tax core -------
+// ------- Tax core (approx) -------
 const BRACKETS=[[0,0.05],[1950000,0.10],[3300000,0.20],[6950000,0.23],[9000000,0.33],[18000000,0.40],[40000000,0.45]];
 const BASIC_DED_IT=480000, BASIC_DED_RES=430000;
 
@@ -63,7 +61,7 @@ function taxableITFromIncome(gSalary, age, addOthers=0){
   return {taxableIT,soc,kyu};
 }
 
-// ------- Loan rules -------
+// ------- Loan rules (limits & period) -------
 function loanLimit(category, isChildYoung, isNew){
   if (category==='その他') return 20000000;
   if (isNew){
@@ -329,10 +327,6 @@ document.getElementById('s3-calc').addEventListener('click', ()=>{
 
   out.innerHTML = `R（住民税所得割）：${fmtJPY(R)} 円 ／ 特例上限（20%）：${fmtJPY(capA)} 円 ／ 住民税残：${fmtJPY(capB)} 円`;
 });
-
-// fix: initial tab active handling
-document.querySelectorAll('.tabs button').forEach(b=> b.addEventListener('click', ()=> selectTab(b.dataset.tab)));
-
 
 // ---- Feature banner ----
 (function(){

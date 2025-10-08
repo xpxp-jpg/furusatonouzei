@@ -32,19 +32,13 @@ h1{margin:8px 0 4px; font-weight:600; letter-spacing:.03em}
 .tip-row .q::after{content:attr(data-tip); position:absolute; left:0; top:120%; white-space:pre-wrap; background:#222; color:#fff; font-size:12px;
   padding:8px 10px; border-radius:8px; width:300px; max-width:70vw; opacity:0; transform:translateY(4px); pointer-events:none; transition:.12s}
 .tip-row .q:hover::after{opacity:1; transform:translateY(0)}
-@keyframes fade{from{opacity:.6}to{opacity:1}}
-
-
-/* ---- Compat: grid fallback & mobile tweaks ---- */
 @supports not (display: grid) {
   .grid{display:flex;flex-wrap:wrap;gap:12px}
   .field{width:100%}
 }
-
 html{-webkit-text-size-adjust:100%}
-/* Avoid iOS auto-zoom on inputs */
 input,select{font-size:16px}
-/* Sticky fallback: just normal flow if sticky unsupported */
 @supports not (position: sticky){
   .topbar{position:static}
 }
+@keyframes fade{from{opacity:.6}to{opacity:1}}

@@ -3,9 +3,22 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ふるさと納税 × 住宅ローン控除（v7）</title>
-  <meta name="description" content="年収700万円以上・住宅ローンありの方向け。都道府県考慮の上限試算ツール。" />
+  <title>ふるさと納税 × 住宅ローン控除（v7.2）</title>
+  <meta name="description" content="年収700万円以上・住宅ローンありの方向け。都道府県を考慮した上限試算ツール。" />
   <link rel="stylesheet" href="styles.css" />
+  
+<!-- Google AdSense Auto ads -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5317898094646973" crossorigin="anonymous"></script>
+
+<!-- Google Analytics 4 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-YS6NM3C8KG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-YS6NM3C8KG');
+</script>
+
 </head>
 <body>
 <header class="wrap topbar">
@@ -15,12 +28,13 @@
     <button data-tab="precise">精確</button>
     <button data-tab="plain">ローンなし</button>
   </nav>
+</header>
+
 <div id="compatWarn" class="wrap" style="display:none;margin-top:8px">
   <div style="background:#fff3cd;border:1px solid #ffe58f;padding:8px 12px;border-radius:8px;color:#664d03;font-size:14px">
     お使いのブラウザは一部の機能（CSS Grid 等）に対応していません。表示を簡易モードで提供します。最新の Chrome / Safari / Edge / Firefox を推奨します。
   </div>
 </div>
-</header>
 
 <main class="wrap">
   <!-- 簡易 -->
@@ -353,6 +367,7 @@
 
 <footer class="wrap foot">
   <small>最終更新：<span id="last"></span> ／ © <span id="year"></span></small>
+  <div class="author">制作者：<b>XPXP-furujyu</b> ／ 連絡先：<a href="mailto:gwycoco@gmail.com">gwycoco@gmail.com</a></div>
 </footer>
 
 <script src="app.js"></script>
