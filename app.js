@@ -1,15 +1,15 @@
-// ------- Data: prefecture income-levy deltas (relative to standard 10%) -------
-// 基本は 10%（都4%+市6%）。一部で超過課税あり。代表例：神奈川県 +0.025%（県民税側）。
-const PREF_INCOME_LEVY_EXTRA = {
-  "神奈川県": 0.00025 // 0.025% = 0.00025 in rate
-  // 兵庫県豊岡市は市の超過課税（ここでは「市区町村の超過課税」入力で対応）
-};
+// ------- Prefecture adjustments -------
+const PREF_INCOME_LEVY_EXTRA = { "神奈川県": 0.00025 };
 
 // ------- Utils -------
-const fmtJPY = n => new Intl.NumberFormat('ja-JP').format(Math.round(n||0));
+// Fallback when Intl.NumberFormat is unavailable (very old Android/iOS)
+const NUMFMT = (typeof Intl !== 'undefined' && Intl.NumberFormat)
+  ? new Intl.NumberFormat('ja-JP')
+  : { format: (n)=> String(Math.round(n||0)).replace(/\B(?=(\d{3})+(?!\d))/g, ',') };
+const fmtJPY = n => NUMFMT.format(Math.round(n||0));
+
 const parseNum = s => { s=(''+(s??'')).replace(/,/g,'').trim(); return s?Number(s):0; };
 const manToYen = s => parseNum(s)*10000;
-
 function bindComma(id){ const el=document.getElementById(id); if(!el) return;
   el.addEventListener('blur', ()=>{ const v=parseNum(el.value); if(Number.isFinite(v)) el.value=new Intl.NumberFormat('ja-JP').format(v); });
 }
@@ -46,19 +46,16 @@ function incomeTaxAmountBeforeCredits(taxable){
   return Math.floor(tax*1.021);
 }
 
-// resident tax share using prefecture + optional municipal extra
 function residentShareFromIncome(gSalary, age, addOthers, prefName, muniExtraPct){
   const soc=socialInsuranceEstimateFromSalary(gSalary,age);
   const kyu=Math.floor(salaryDeduction(gSalary));
   const taxableRES=Math.max(0, gSalary+addOthers - kyu - soc - BASIC_DED_RES);
-  // base 10% + prefecture extra + municipal extra
   const extraPref = PREF_INCOME_LEVY_EXTRA[prefName] || 0;
   const extraMuni = (muniExtraPct||0)/100.0;
   const rate = 0.10 + extraPref + extraMuni;
   const R=Math.floor(taxableRES * rate);
   return {R,taxableRES, appliedRate:rate};
 }
-
 function taxableITFromIncome(gSalary, age, addOthers=0){
   const soc=socialInsuranceEstimateFromSalary(gSalary,age);
   const kyu=Math.floor(salaryDeduction(gSalary));
@@ -120,7 +117,7 @@ function selectTab(id){
 }
 document.querySelectorAll('.tabs button').forEach(b=> b.addEventListener('click', ()=> selectTab(b.dataset.tab)));
 
-// ------- Auto/Manual framework for precise R & year-end -------
+// ------- Auto/Manual helpers -------
 function setupAutoManual(autoId, manualId, toggleId, computeFn){
   const autoEl = document.getElementById(autoId);
   const manEl  = document.getElementById(manualId);
@@ -142,7 +139,7 @@ function setupAutoManual(autoId, manualId, toggleId, computeFn){
   return { getValueYen: ()=> toggle.checked ? (parseNum(manEl.value)*10000) : parseNum(autoEl.value.replace(/,/g,'')) };
 }
 
-// ------- SIMPLE TAB -------
+// ------- SIMPLE -------
 document.getElementById('s1-calc').addEventListener('click', ()=>{
   const pref=document.getElementById('s1-pref').value;
   const salaryMan=parseNum(document.getElementById('s1-salary').value);
@@ -193,7 +190,7 @@ document.getElementById('s1-calc').addEventListener('click', ()=>{
     `住民税所得割（推定）：${fmtJPY(R)} 円 ／ 特例上限（20%）：${fmtJPY(capA)} 円 ／ 住民税残：${fmtJPY(capB)} 円`;
 });
 
-// ------- PRECISE TAB -------
+// ------- PRECISE -------
 function computeYearEndS2(){
   const principal=manToYen(document.getElementById('s2-principal').value);
   const rate=parseNum(document.getElementById('s2-rate').value);
@@ -270,9 +267,7 @@ document.getElementById('s2-calc').addEventListener('click', ()=>{
   const res30 = Math.floor(grossIncome*0.30);
   Dmax = Math.min(Dmax, inc40, res30);
 
-  // resident rate presentation
   const { appliedRate } = residentShareFromIncome(g, age, addOthers, pref, muniExtra);
-
   sum.innerHTML = `<span class="chip">上限：<b>${fmtJPY(Dmax)}</b> 円</span>
                    <span class="chip">所得税率(概算)：${(tIncl*100).toFixed(1)}%</span>
                    <span class="chip">住民税率(所得割)：${(appliedRate*100).toFixed(3)}%</span>`;
@@ -282,7 +277,7 @@ document.getElementById('s2-calc').addEventListener('click', ()=>{
     `R（住民税所得割）：${fmtJPY(R)} 円 ／ 特例上限（20%）：${fmtJPY(capA)} 円 ／ 住民税残：${fmtJPY(capB)} 円`;
 });
 
-// ------- PLAIN TAB -------
+// ------- PLAIN -------
 function computeRS3(){
   const pref=document.getElementById('s3-pref').value;
   const muniExtra=parseNum(document.getElementById('s3-muni-extra').value);
@@ -335,10 +330,15 @@ document.getElementById('s3-calc').addEventListener('click', ()=>{
   out.innerHTML = `R（住民税所得割）：${fmtJPY(R)} 円 ／ 特例上限（20%）：${fmtJPY(capA)} 円 ／ 住民税残：${fmtJPY(capB)} 円`;
 });
 
-// ------- Tabs switch -------
-function selectTab(id){
-  document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('active', b.dataset.tab===id));
-  document.querySelectorAll('.tab').forEach(s=>s.classList.toggle('active', s.id==='tab-'+id));
-  window.scrollTo({top:0,behavior:'smooth'});
-}
+// fix: initial tab active handling
 document.querySelectorAll('.tabs button').forEach(b=> b.addEventListener('click', ()=> selectTab(b.dataset.tab)));
+
+
+// ---- Feature banner ----
+(function(){
+  var okGrid = !!(window.CSS && CSS.supports && CSS.supports('display','grid'));
+  if(!okGrid){
+    var w = document.getElementById('compatWarn');
+    if(w) w.style.display = 'block';
+  }
+})();
