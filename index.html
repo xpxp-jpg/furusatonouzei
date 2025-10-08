@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ふるさと納税 × 住宅ローン控除 ツール（v3）</title>
-  <meta name="description" content="年収・年齢・住宅ローン情報から、ふるさと納税の上限額を試算します。ブラウザ内で計算・データ送信なし。" />
+  <title>ふるさと納税 × 住宅ローン控除 ツール（v4）</title>
+  <meta name="description" content="年収・年齢・住宅ローン情報から、ふるさと納税の上限額を簡易/精確に試算。ブラウザ内で計算・データ送信なし。" />
   <link rel="stylesheet" href="styles.css" />
-  <style>.req{color:#d00;font-weight:600;margin-left:.25rem}.unit{color:#555;margin-left:.35rem;font-size:.9em}</style>
+  <style>.req{color:#d00;font-weight:600;margin-left:.25rem}.unit{color:#555;margin-left:.35rem;font-size:.9em}details>summary{cursor:pointer}</style>
 </head>
 <body>
 <header class="wrap">
@@ -19,14 +19,14 @@
 </header>
 
 <main class="wrap">
-  <!-- Tab 1: 簡易 -->
   <section id="tab-simple" class="tab active">
     <h2>ふるさと納税*住宅ローン控除(簡易)</h2>
     <p class="hint">※ 必須のみ。金額は <b>万円</b> 単位で入力してください。</p>
     <div class="grid">
       <label>年収<input id="s1-salary" inputmode="numeric" placeholder="例: 700"><span class="unit">万円</span><span class="req">必須</span></label>
       <label>年齢<input id="s1-age" inputmode="numeric" placeholder="例: 37"><span class="req">必須</span></label>
-      <label>借入開始（年）<input id="s1-start-y" inputmode="numeric" placeholder="例: 2023"><span class="req">必須</span></label>
+
+      <label>借入開始（年）<input id="s1-start-y" inputmode="numeric" placeholder="例: 2024"><span class="req">必須</span></label>
       <label>借入開始（月）<input id="s1-start-m" inputmode="numeric" placeholder="例: 4"><span class="req">必須</span></label>
       <label>借入総額<input id="s1-principal" inputmode="numeric" placeholder="例: 4000"><span class="unit">万円</span><span class="req">必須</span></label>
       <label>返済年数<input id="s1-years" inputmode="numeric" placeholder="例: 35"><span class="unit">年</span><span class="req">必須</span></label>
@@ -35,43 +35,89 @@
         <select id="s1-method"><option>元利均等</option><option>元金均等</option></select>
         <span class="req">必須</span>
       </label>
+
+      <label>住宅区分
+        <select id="s1-cat">
+          <option value="認定">認定</option>
+          <option value="ZEH">ZEH</option>
+          <option value="省エネ" selected>省エネ</option>
+          <option value="その他">その他</option>
+        </select>
+        <span class="req">必須</span>
+      </label>
+      <label>新築 / 中古
+        <select id="s1-newused"><option>新築</option><option>中古</option></select>
+        <span class="req">必須</span>
+      </label>
+      <label class="check"><input type="checkbox" id="s1-child"> 子育て・若者夫婦（任意）</label>
+
       <label>対象年（計算年）<input id="s1-target-y" inputmode="numeric" placeholder="例: 2025"><span class="req">必須</span></label>
     </div>
     <div class="actions"><button id="s1-calc">計算する</button></div>
     <div id="s1-out" class="result"></div>
   </section>
 
-  <!-- Tab 2: 精確 -->
   <section id="tab-precise" class="tab">
     <h2>ふるさと納税*住宅ローン控除(精確)</h2>
-    <p class="hint">※ 必須のみ。金額は <b>万円</b> 単位で入力。控除対象上限は性能区分等により異なるため、<b>上限（万円）</b>を必須入力にしています。</p>
+    <p class="hint">※ 必須のみ（e-Tax の数値が手元にあれば、<b>住民税所得割額（調整控除後）</b>を入力すると最も正確です）。金額は <b>万円</b>。</p>
     <div class="grid">
       <label>年収<input id="s2-salary" inputmode="numeric" placeholder="例: 700"><span class="unit">万円</span><span class="req">必須</span></label>
       <label>年齢<input id="s2-age" inputmode="numeric" placeholder="例: 37"><span class="req">必須</span></label>
-      <label>借入開始（年）<input id="s2-start-y" inputmode="numeric" placeholder="例: 2023"><span class="req">必須</span></label>
-      <label>借入開始（月）<input id="s2-start-m" inputmode="numeric" placeholder="例: 4"><span class="req">必須</span></label>
-      <label>借入総額<input id="s2-principal" inputmode="numeric" placeholder="例: 4000"><span class="unit">万円</span><span class="req">必須</span></label>
-      <label>返済年数<input id="s2-years" inputmode="numeric" placeholder="例: 35"><span class="unit">年</span><span class="req">必須</span></label>
-      <label>年利<input id="s2-rate" inputmode="decimal" placeholder="例: 1.2"><span class="unit">%</span><span class="req">必須</span></label>
-      <label>利息計算方式
-        <select id="s2-method"><option>元利均等</option><option>元金均等</option></select>
+
+      <label>入居年（居住開始年）<input id="s2-movein-y" inputmode="numeric" placeholder="例: 2024"><span class="req">必須</span></label>
+      <label>対象年（計算年）<input id="s2-target-y" inputmode="numeric" placeholder="例: 2025"><span class="req">必須</span></label>
+      <label>年末残高<input id="s2-yearend" inputmode="numeric" placeholder="例: 3200"><span class="unit">万円</span><span class="req">必須</span></label>
+
+      <label>住宅区分
+        <select id="s2-cat">
+          <option value="認定">認定</option>
+          <option value="ZEH">ZEH</option>
+          <option value="省エネ" selected>省エネ</option>
+          <option value="その他">その他</option>
+        </select>
         <span class="req">必須</span>
       </label>
-      <label>対象年（計算年）<input id="s2-target-y" inputmode="numeric" placeholder="例: 2025"><span class="req">必須</span></label>
-      <label>控除対象上限<input id="s2-cap-man" inputmode="numeric" placeholder="例: 3000"><span class="unit">万円</span><span class="req">必須</span></label>
+      <label>新築 / 中古
+        <select id="s2-newused"><option>新築</option><option>中古</option></select>
+        <span class="req">必須</span>
+      </label>
+      <label class="check"><input type="checkbox" id="s2-child"> 子育て・若者夫婦（任意）</label>
+
+      <label>住民税所得割額（調整控除後）<input id="s2-R" inputmode="numeric" placeholder="例: 50"><span class="unit">万円</span><span class="req">必須</span></label>
     </div>
+
+    <details style="margin:10px 0;">
+      <summary>选填 / 高级（没有 e-Tax 数值时可用来近似）</summary>
+      <div class="grid">
+        <label>不動産所得（合計）<input id="s2-real" inputmode="numeric" placeholder="例: -50"><span class="unit">万円</span></label>
+        <label>事業・雑所得（合計）<input id="s2-side" inputmode="numeric" placeholder="例: 80"><span class="unit">万円</span></label>
+        <label>所得税額（控除前・任意）<input id="s2-itax" inputmode="numeric" placeholder="例: 120"><span class="unit">万円</span></label>
+      </div>
+      <p class="hint">※ 填写上面三项可以在缺少 e-Tax 详细时更贴近真实；如提供了「所得税額（控除前）」则优先使用它。</p>
+    </details>
+
     <div class="actions"><button id="s2-calc">計算する</button></div>
     <div id="s2-out" class="result"></div>
   </section>
 
-  <!-- Tab 3: ふるさと納税 -->
   <section id="tab-plain" class="tab">
     <h2>ふるさと納税（住宅ローンなし）</h2>
-    <p class="hint">※ 必須のみ。金額は <b>万円</b> 単位で入力してください。</p>
+    <p class="hint">※ 必須のみ。金額は <b>万円</b>。</p>
     <div class="grid">
       <label>年収<input id="s3-salary" inputmode="numeric" placeholder="例: 700"><span class="unit">万円</span><span class="req">必須</span></label>
       <label>年齢<input id="s3-age" inputmode="numeric" placeholder="例: 37"><span class="req">必須</span></label>
+      <label>住民税所得割額（調整控除後）<input id="s3-R" inputmode="numeric" placeholder="例: 50"><span class="unit">万円</span><span class="req">必須</span></label>
     </div>
+
+    <details style="margin:10px 0;">
+      <summary>选填 / 高级</summary>
+      <div class="grid">
+        <label>不動産所得（合計）<input id="s3-real" inputmode="numeric" placeholder="例: -50"><span class="unit">万円</span></label>
+        <label>事業・雑所得（合計）<input id="s3-side" inputmode="numeric" placeholder="例: 80"><span class="unit">万円</span></label>
+        <label>所得税額（控除前・任意）<input id="s3-itax" inputmode="numeric" placeholder="例: 120"><span class="unit">万円</span></label>
+      </div>
+    </details>
+
     <div class="actions"><button id="s3-calc">計算する</button></div>
     <div id="s3-out" class="result"></div>
   </section>
