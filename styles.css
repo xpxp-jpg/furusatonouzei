@@ -42,3 +42,14 @@ input,select{font-size:16px}
   .topbar{position:static}
 }
 @keyframes fade{from{opacity:.6}to{opacity:1}}
+
+.title-sub{margin-left:10px; font-size:13px; color:#444}
+.result .big{font-size:28px; font-weight:700; margin-bottom:8px}
+.result .more{border:1px solid var(--line); background:#f7f7f7; border-radius:8px; padding:8px 12px; cursor:pointer}
+.result .details{margin-top:10px; padding:10px; background:#fff; border:1px dashed #ccc; border-radius:10px; line-height:1.8}
+.result .disclaimer{margin-top:8px; font-size:12px; color:#666}
+.feedback h2{margin-top:24px}
+.feedback .row{display:flex; flex-direction:column; gap:6px; margin-bottom:12px}
+.feedback input, .feedback textarea{padding:10px 12px; border:1px solid #cfcfcf; border-radius:10px; font-family:inherit}
+.feedback textarea{min-height:120px}
+.muted{color:#666; margin-left:8px; font-size:13px}

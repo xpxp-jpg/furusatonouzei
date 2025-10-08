@@ -1,3 +1,13 @@
+
+function setResult(prefix, Dmax, detailsHtml){
+  const big = document.getElementById(prefix+'-dmax');
+  const btn = document.getElementById(prefix+'-more');
+  const det = document.getElementById(prefix+'-details');
+  big.textContent = 'ふるさと納税限度額：' + fmtJPY(Dmax) + ' 円';
+  btn.onclick = ()=>{ det.style.display = (det.style.display==='none')?'block':'none'; };
+  det.innerHTML = detailsHtml;
+}
+
 // ------- Prefecture small adjustment example -------
 const PREF_INCOME_LEVY_EXTRA = { "神奈川県": 0.00025 };
 
@@ -62,7 +72,7 @@ function taxableITFromIncome(gSalary, age, addOthers=0){
 }
 
 // ------- Loan rules (limits & period) -------
-function loanLimit(category, isChildYoung, isNew){
+function loanLimit(category, isChildYoung, isNew){ category = category||'その他';
   if (category==='その他') return 20000000;
   if (isNew){
     if (isChildYoung){
@@ -142,8 +152,8 @@ document.getElementById('s1-calc').addEventListener('click', ()=>{
   const pref=document.getElementById('s1-pref').value;
   const salaryMan=parseNum(document.getElementById('s1-salary').value);
   const age=parseNum(document.getElementById('s1-age').value);
-  const sy=parseNum(document.getElementById('s1-start-y').value);
-  const sm=parseNum(document.getElementById('s1-start-m').value);
+  const ym=document.getElementById('s1-start-ym').value; const sy= ym? Number(ym.split('-')[0]):0;
+  const sm= ym? Number(ym.split('-')[1]):0;
   const principalMan=parseNum(document.getElementById('s1-principal').value);
   const years=parseNum(document.getElementById('s1-years').value);
   const rate=parseNum(document.getElementById('s1-rate').value);
@@ -152,7 +162,7 @@ document.getElementById('s1-calc').addEventListener('click', ()=>{
   const isNew=document.getElementById('s1-newused').value==='新築';
   const isChild=document.getElementById('s1-child').checked;
   const targetY=parseNum(document.getElementById('s1-target-y').value);
-  const muniExtra=parseNum(document.getElementById('s1-muni-extra').value);
+  const muniExtra=0;
   const out=document.getElementById('s1-out');
   const sum=document.getElementById('s1-summary');
 
@@ -179,21 +189,18 @@ document.getElementById('s1-calc').addEventListener('click', ()=>{
   const { d1, d2, capA, capB } = furusatoLimitGiven(tIncl, R, loanResCredit);
   const Dmax = Math.min(d1, d2);
 
-  sum.innerHTML = `<span class="chip">上限見込：<b>${fmtJPY(Dmax)}</b> 円</span>
-                   <span class="chip">所得税率(概算)：${(tIncl*100).toFixed(1)}%</span>
-                   <span class="chip">住民税率(所得割)：${(appliedRate*100).toFixed(3)}%</span>`;
-
-  out.innerHTML = `年末残高（推定）：${fmtJPY(bal)} 円 ／ 控除上限：${fmtJPY(cap)} 円 ／ 年間控除：${fmtJPY(annualCredit)} 円<br>`+
+  const details1 = `年末残高（推定）：${fmtJPY(bal)} 円 ／ 控除上限：${fmtJPY(cap)} 円 ／ 年間控除：${fmtJPY(annualCredit)} 円<br>`+
     `所得税で使用：${fmtJPY(usedIT)} 円 ／ 住民税側控除：<strong>${fmtJPY(loanResCredit)} 円</strong><br>`+
     `住民税所得割（推定）：${fmtJPY(R)} 円 ／ 特例上限（20%）：${fmtJPY(capA)} 円 ／ 住民税残：${fmtJPY(capB)} 円`;
+  setResult('s1', Dmax, details1);
 });
 
 // ------- PRECISE -------
 function computeYearEndS2(){
   const principal=manToYen(document.getElementById('s2-principal').value);
   const rate=parseNum(document.getElementById('s2-rate').value);
-  const sy=parseNum(document.getElementById('s2-start-y').value);
-  const sm=parseNum(document.getElementById('s2-start-m').value);
+  const ym2=document.getElementById('s2-start-ym').value; const sy=parseInt(ym2? ym2.split('-')[0]:0);
+  const sm=parseInt(ym2? ym2.split('-')[1]:0);
   const years=parseNum(document.getElementById('s2-years').value);
   const targetY=parseNum(document.getElementById('s2-target-y').value);
   const method=document.getElementById('s2-method').value;
@@ -218,8 +225,8 @@ document.getElementById('s2-calc').addEventListener('click', ()=>{
   const pref=document.getElementById('s2-pref').value;
   const salaryMan=parseNum(document.getElementById('s2-salary').value);
   const age=parseNum(document.getElementById('s2-age').value);
-  const sy=parseNum(document.getElementById('s2-start-y').value);
-  const sm=parseNum(document.getElementById('s2-start-m').value);
+  const ym2=document.getElementById('s2-start-ym').value; const sy=parseInt(ym2? ym2.split('-')[0]:0);
+  const sm=parseInt(ym2? ym2.split('-')[1]:0);
   const principalMan=parseNum(document.getElementById('s2-principal').value);
   const years=parseNum(document.getElementById('s2-years').value);
   const rate=parseNum(document.getElementById('s2-rate').value);
@@ -266,13 +273,10 @@ document.getElementById('s2-calc').addEventListener('click', ()=>{
   Dmax = Math.min(Dmax, inc40, res30);
 
   const { appliedRate } = residentShareFromIncome(g, age, addOthers, pref, muniExtra);
-  sum.innerHTML = `<span class="chip">上限：<b>${fmtJPY(Dmax)}</b> 円</span>
-                   <span class="chip">所得税率(概算)：${(tIncl*100).toFixed(1)}%</span>
-                   <span class="chip">住民税率(所得割)：${(appliedRate*100).toFixed(3)}%</span>`;
-
-  out.innerHTML = `年末残高：${fmtJPY(bal)} 円 ／ 控除上限：${fmtJPY(cap)} 円 ／ 年間控除：${fmtJPY(annualCredit)} 円<br>`+
+  const details2 = `年末残高：${fmtJPY(bal)} 円 ／ 控除上限：${fmtJPY(cap)} 円 ／ 年間控除：${fmtJPY(annualCredit)} 円<br>`+
     `所得税で使用：${fmtJPY(usedIT)} 円 ／ 住民税側控除：<strong>${fmtJPY(loanResCredit)} 円</strong><br>`+
     `R（住民税所得割）：${fmtJPY(R)} 円 ／ 特例上限（20%）：${fmtJPY(capA)} 円 ／ 住民税残：${fmtJPY(capB)} 円`;
+  setResult('s2', Dmax, details2);
 });
 
 // ------- PLAIN -------
@@ -321,11 +325,9 @@ document.getElementById('s3-calc').addEventListener('click', ()=>{
   Dmax = Math.min(Dmax, inc40, res30);
 
   const { appliedRate } = residentShareFromIncome(g, age, addOthers, pref, muniExtra);
-  sum.innerHTML = `<span class="chip">上限：<b>${fmtJPY(Dmax)}</b> 円</span>
-                   <span class="chip">所得税率(概算)：${(tIncl*100).toFixed(1)}%</span>
-                   <span class="chip">住民税率(所得割)：${(appliedRate*100).toFixed(3)}%</span>`;
-
-  out.innerHTML = `R（住民税所得割）：${fmtJPY(R)} 円 ／ 特例上限（20%）：${fmtJPY(capA)} 円 ／ 住民税残：${fmtJPY(capB)} 円`;
+  const details3 = `R（住民税所得割）：${fmtJPY(R)} 円 ／ 特例上限（20%）：${fmtJPY(capA)} 円 ／ 住民税残：${fmtJPY(capB)} 円`;
+  setResult('s3', Dmax, details3);
+  setResult('s2', Dmax, details2);
 });
 
 // ---- Feature banner ----
