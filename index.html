@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ふるさと納税 × 住宅ローン控除 ツール（3タブ版）</title>
-  <meta name="description" content="ふるさと納税の上限額を、住宅ローン控除の影響を考慮して簡易/精確に試算。ブラウザ内で計算し、入力データは送信しません。" />
+  <title>ふるさと納税 × 住宅ローン控除 ツール（v3）</title>
+  <meta name="description" content="年収・年齢・住宅ローン情報から、ふるさと納税の上限額を試算します。ブラウザ内で計算・データ送信なし。" />
   <link rel="stylesheet" href="styles.css" />
   <style>.req{color:#d00;font-weight:600;margin-left:.25rem}.unit{color:#555;margin-left:.35rem;font-size:.9em}</style>
 </head>
@@ -19,34 +19,55 @@
 </header>
 
 <main class="wrap">
+  <!-- Tab 1: 簡易 -->
   <section id="tab-simple" class="tab active">
     <h2>ふるさと納税*住宅ローン控除(簡易)</h2>
-    <p class="hint">※ 必須のみ。年収とローン返済額は <b>万円</b> 単位で入力してください（例: 700 → 700万円）。<br>
-    返済額から年末残高を <em>利率1.2%・残存期間25年・元利均等</em> と仮定して簡易推定します。控除の上限額は保守的に <b>3,000万円</b> を使用します。</p>
+    <p class="hint">※ 必須のみ。金額は <b>万円</b> 単位で入力してください。</p>
     <div class="grid">
       <label>年収<input id="s1-salary" inputmode="numeric" placeholder="例: 700"><span class="unit">万円</span><span class="req">必須</span></label>
       <label>年齢<input id="s1-age" inputmode="numeric" placeholder="例: 37"><span class="req">必須</span></label>
-      <label>住宅ローン返済額（年間）<input id="s1-annual-pay" inputmode="numeric" placeholder="例: 120"><span class="unit">万円/年</span><span class="req">必須</span></label>
+      <label>借入開始（年）<input id="s1-start-y" inputmode="numeric" placeholder="例: 2023"><span class="req">必須</span></label>
+      <label>借入開始（月）<input id="s1-start-m" inputmode="numeric" placeholder="例: 4"><span class="req">必須</span></label>
+      <label>借入総額<input id="s1-principal" inputmode="numeric" placeholder="例: 4000"><span class="unit">万円</span><span class="req">必須</span></label>
+      <label>返済年数<input id="s1-years" inputmode="numeric" placeholder="例: 35"><span class="unit">年</span><span class="req">必須</span></label>
+      <label>年利<input id="s1-rate" inputmode="decimal" placeholder="例: 1.2"><span class="unit">%</span><span class="req">必須</span></label>
+      <label>利息計算方式
+        <select id="s1-method"><option>元利均等</option><option>元金均等</option></select>
+        <span class="req">必須</span>
+      </label>
+      <label>対象年（計算年）<input id="s1-target-y" inputmode="numeric" placeholder="例: 2025"><span class="req">必須</span></label>
     </div>
     <div class="actions"><button id="s1-calc">計算する</button></div>
     <div id="s1-out" class="result"></div>
   </section>
 
+  <!-- Tab 2: 精確 -->
   <section id="tab-precise" class="tab">
     <h2>ふるさと納税*住宅ローン控除(精確)</h2>
-    <p class="hint">※ 必須のみ。年収と年末残高は <b>万円</b> 単位で入力してください。控除上限は <b>3,000万円</b> を上限とします（住宅性能により実際は変動）。</p>
+    <p class="hint">※ 必須のみ。金額は <b>万円</b> 単位で入力。控除対象上限は性能区分等により異なるため、<b>上限（万円）</b>を必須入力にしています。</p>
     <div class="grid">
       <label>年収<input id="s2-salary" inputmode="numeric" placeholder="例: 700"><span class="unit">万円</span><span class="req">必須</span></label>
       <label>年齢<input id="s2-age" inputmode="numeric" placeholder="例: 37"><span class="req">必須</span></label>
-      <label>住宅ローン年末残高<input id="s2-yearend-bal" inputmode="numeric" placeholder="例: 3000"><span class="unit">万円</span><span class="req">必須</span></label>
+      <label>借入開始（年）<input id="s2-start-y" inputmode="numeric" placeholder="例: 2023"><span class="req">必須</span></label>
+      <label>借入開始（月）<input id="s2-start-m" inputmode="numeric" placeholder="例: 4"><span class="req">必須</span></label>
+      <label>借入総額<input id="s2-principal" inputmode="numeric" placeholder="例: 4000"><span class="unit">万円</span><span class="req">必須</span></label>
+      <label>返済年数<input id="s2-years" inputmode="numeric" placeholder="例: 35"><span class="unit">年</span><span class="req">必須</span></label>
+      <label>年利<input id="s2-rate" inputmode="decimal" placeholder="例: 1.2"><span class="unit">%</span><span class="req">必須</span></label>
+      <label>利息計算方式
+        <select id="s2-method"><option>元利均等</option><option>元金均等</option></select>
+        <span class="req">必須</span>
+      </label>
+      <label>対象年（計算年）<input id="s2-target-y" inputmode="numeric" placeholder="例: 2025"><span class="req">必須</span></label>
+      <label>控除対象上限<input id="s2-cap-man" inputmode="numeric" placeholder="例: 3000"><span class="unit">万円</span><span class="req">必須</span></label>
     </div>
     <div class="actions"><button id="s2-calc">計算する</button></div>
     <div id="s2-out" class="result"></div>
   </section>
 
+  <!-- Tab 3: ふるさと納税 -->
   <section id="tab-plain" class="tab">
     <h2>ふるさと納税（住宅ローンなし）</h2>
-    <p class="hint">※ 必須のみ。年収は <b>万円</b> 単位で入力してください。</p>
+    <p class="hint">※ 必須のみ。金額は <b>万円</b> 単位で入力してください。</p>
     <div class="grid">
       <label>年収<input id="s3-salary" inputmode="numeric" placeholder="例: 700"><span class="unit">万円</span><span class="req">必須</span></label>
       <label>年齢<input id="s3-age" inputmode="numeric" placeholder="例: 37"><span class="req">必須</span></label>
