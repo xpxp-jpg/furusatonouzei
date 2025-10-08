@@ -1,151 +1,96 @@
 <!doctype html><html lang="ja"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ふるさと納税 × 住宅ローン控除 シミュレーション（精確・単一画面 v7.5.2）</title>
-<meta name="description" content="精確版のみを単一画面で提供。年収・年齢・居住地・住宅ローン条件から、ふるさと納税の限度額を推定します。">
-<link rel="stylesheet" href="styles.css?v=7.5.2sp">
-<!-- GA4 -->
+<title>ふるさと納税 × 住宅ローン控除 シミュレーション（精確・単一画面 v7.5.2-3）</title>
+<meta name="description" content="精確版のみを単一画面で提供。年収・年齢・居住地・住宅ローン条件・扶養/配偶を考慮して、ふるさと納税の限度額を推定します。">
+<link rel="stylesheet" href="styles.css?v=7.5.2-3">
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-YS6NM3C8KG"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)};gtag('js',new Date());gtag('config','G-YS6NM3C8KG');</script>
-<!-- AdSense Auto Ads -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5317898094646973" crossorigin="anonymous"></script>
 </head><body>
 <header class="wrap header-row">
-  <div class="left">
-    <h1>ふるさと納税 × 住宅ローン控除 シミュレーション</h1>
-  </div>
-  <div class="right">
-    <button id="btn-reset" class="reset-ghost" title="入力をすべて消去">全内容消去</button>
-  </div>
+  <div class="left"><h1>ふるさと納税 × 住宅ローン控除 シミュレーション</h1></div>
+  <div class="right"><button id="btn-reset" class="reset-ghost" title="入力をすべて消去">全内容消去</button></div>
 </header>
 
 <main class="wrap">
   <section id="precise-single">
-    <!-- 1. 居住地 -->
+    <!-- 居住地 -->
     <div class="grid2">
-      <div class="field">
-        <div class="label-row"><span class="title">都道府県</span><span class="meta"><span class="req">必須</span></span></div>
+      <div class="field"><div class="label-row"><span class="title">都道府県</span><span class="meta"><span class="req">必須</span></span></div>
         <select id="pref">
           <option>北海道</option><option>青森県</option><option>岩手県</option><option>宮城県</option><option>秋田県</option>
           <option>山形県</option><option>福島県</option><option>茨城県</option><option>栃木県</option><option>群馬県</option>
-          <option>埼玉県</option><option>千葉県</option><option selected>東京都</option><option>神奈川県</option>
+          <option>埼玉県</option><option>千葉県</option><option selected>東京都</option><option>神奈川県</option><option>新潟県</option>
+          <option>富山県</option><option>石川県</option><option>福井県</option><option>山梨県</option><option>長野県</option>
+          <option>岐阜県</option><option>静岡県</option><option>愛知県</option><option>三重県</option><option>滋賀県</option>
+          <option>京都府</option><option>大阪府</option><option>兵庫県</option><option>奈良県</option><option>和歌山県</option>
+          <option>鳥取県</option><option>島根県</option><option>岡山県</option><option>広島県</option><option>山口県</option>
+          <option>徳島県</option><option>香川県</option><option>愛媛県</option><option>高知県</option><option>福岡県</option>
+          <option>佐賀県</option><option>長崎県</option><option>熊本県</option><option>大分県</option><option>宮崎県</option>
+          <option>鹿児島県</option><option>沖縄県</option>
         </select>
       </div>
-      <div class="field">
-        <div class="label-row"><span class="title">市区町村（任意）</span></div>
-        <input id="city" placeholder="例：横浜市 中区">
-      </div>
+      <div class="field"><div class="label-row"><span class="title">市区町村（任意）</span></div><input id="city" placeholder="例：横浜市 中区"></div>
     </div>
-
     <div class="hint" id="extra-hint">上乗せ率（所得割）（自動）：0%</div>
 
-    <!-- 2. 基本情報 -->
+    <!-- 基本情報 -->
     <div class="grid3">
-      <div class="field">
-        <div class="label-row"><span class="title">年収（万円）</span><span class="meta"><span class="req">必須</span></span></div>
-        <input id="salary" inputmode="numeric" placeholder="例：900">
-      </div>
-      <div class="field">
-        <div class="label-row"><span class="title">年齢</span><span class="meta"><span class="req">必須</span></span></div>
-        <input id="age" inputmode="numeric" placeholder="例：40">
-      </div>
-      <div class="field">
-        <div class="label-row"><span class="title">対象年</span><span class="meta"><span class="req">必須</span></span></div>
-        <input id="targetY" inputmode="numeric" placeholder="例：2025">
-      </div>
+      <div class="field"><div class="label-row"><span class="title">年収（万円）</span><span class="meta"><span class="req">必須</span></span></div><input id="salary" inputmode="numeric" placeholder="例：900"></div>
+      <div class="field"><div class="label-row"><span class="title">年齢</span><span class="meta"><span class="req">必須</span></span></div><input id="age" inputmode="numeric" placeholder="例：40"></div>
+      <div class="field"><div class="label-row"><span class="title">対象年</span><span class="meta"><span class="req">必須</span></span></div><input id="targetY" inputmode="numeric" placeholder="例：2025"></div>
     </div>
 
-    <!-- 3. 借入情報（年月は最後に年末残高を計算する前提で使う） -->
+    <!-- 家族・扶養（必須） -->
     <div class="grid3">
-      <div class="field">
-        <div class="label-row"><span class="title">借入開始年月（手入力）</span><span class="meta"><span class="req">必須</span></span></div>
-        <input id="startYM" inputmode="numeric" placeholder="YYYY-MM または YYYYMM">
-      </div>
-      <div class="field">
-        <div class="label-row"><span class="title">借入総額（万円）</span><span class="meta"><span class="req">必須</span></span></div>
-        <input id="principal" inputmode="numeric" placeholder="例：6000">
-      </div>
-      <div class="field">
-        <div class="label-row"><span class="title">返済年数（年）</span><span class="meta"><span class="req">必須</span></span></div>
-        <input id="years" inputmode="numeric" placeholder="例：35">
-      </div>
+      <div class="field"><div class="label-row"><span class="title">配偶者の合計所得金額（万円）</span><span class="meta"><span class="req">必須</span></span></div>
+        <input id="spIncome" inputmode="decimal" placeholder="いない場合は 0"></div>
+      <div class="field"><div class="label-row"><span class="title">扶養親族（一般）人数</span><span class="meta"><span class="req">必須</span></span></div>
+        <input id="depGen" inputmode="numeric" placeholder="0"></div>
+      <div class="field"><div class="label-row"><span class="title">扶養親族（特定 19–22歳）人数</span><span class="meta"><span class="req">必須</span></span></div>
+        <input id="depSpec" inputmode="numeric" placeholder="0"></div>
     </div>
-
-    <div class="grid3">
-      <div class="field">
-        <div class="label-row"><span class="title">年利（%）</span><span class="meta"><span class="req">必須</span></span></div>
-        <input id="rate" inputmode="decimal" placeholder="例：0.8">
-      </div>
-      <div class="field">
-        <div class="label-row"><span class="title">返済方式</span><span class="meta"><span class="req">必須</span></span></div>
-        <select id="method"><option>元利均等</option><option>元金均等</option></select>
-      </div>
-      <div class="field">
-        <!-- 住宅区分：任意オプション削除、? クリックで説明 -->
-        <div class="label-row">
-          <span class="title">住宅区分</span><span class="meta"><!-- not 必須表示（任意のまま） --><button type="button" class="info" data-pop="cat-tip">?</button></span>
-        </div>
-        <select id="cat">
-          <option value="" selected>— 選択なし —</option>
-          <option>認定</option><option>ZEH</option><option>省エネ</option><option>その他</option>
-        </select>
-        <div id="cat-tip" class="popover" hidden>
-          <b>住宅区分の目安</b><br>
-          認定：認定長期優良住宅・低炭素住宅など。<br>
-          ZEH：ネット・ゼロ・エネルギー・ハウス相当。<br>
-          省エネ：省エネ基準適合。<br>
-          その他：上記以外の一般的な住宅。
-        </div>
-      </div>
-    </div>
-
     <div class="grid2">
-      <div class="field">
-        <div class="label-row"><span class="title">新築・中古（任意）</span></div>
-        <select id="newused"><option value="" selected>— 選択なし —</option><option>新築</option><option>中古</option></select>
-      </div>
-      <div class="field child-block">
-        <div class="label-row">
-          <span class="title">子育て・若者夫婦（任意）</span>
-          <button type="button" class="info" data-pop="child-tip">?</button>
-        </div>
-        <label class="toggle"><input id="child" type="checkbox"> 該当する</label>
-        <div id="child-tip" class="popover" hidden>
-          子育て：18歳以下の子を扶養。若者夫婦：いずれかが39歳以下など。制度により細目が異なります。
-        </div>
+      <div class="field"><div class="label-row"><span class="title">老人扶養（同居老親等）人数</span><span class="meta"><span class="req">必須</span></span></div>
+        <input id="depElderSame" inputmode="numeric" placeholder="0"></div>
+      <div class="field"><div class="label-row"><span class="title">老人扶養（その他）人数</span><span class="meta"><span class="req">必須</span></span></div>
+        <input id="depElderOther" inputmode="numeric" placeholder="0"></div>
+    </div>
+
+    <!-- 借入情報 -->
+    <div class="grid3">
+      <div class="field"><div class="label-row"><span class="title">借入開始年月（手入力）</span><span class="meta"><span class="req">必須</span></span></div><input id="startYM" inputmode="numeric" placeholder="YYYY-MM または YYYYMM"></div>
+      <div class="field"><div class="label-row"><span class="title">借入総額（万円）</span><span class="meta"><span class="req">必須</span></span></div><input id="principal" inputmode="numeric" placeholder="例：6000"></div>
+      <div class="field"><div class="label-row"><span class="title">返済年数（年）</span><span class="meta"><span class="req">必須</span></span></div><input id="years" inputmode="numeric" placeholder="例：35"></div>
+    </div>
+
+    <div class="grid3">
+      <div class="field"><div class="label-row"><span class="title">年利（%）</span><span class="meta"><span class="req">必須</span></span></div><input id="rate" inputmode="decimal" placeholder="例：0.8"></div>
+      <div class="field"><div class="label-row"><span class="title">返済方式</span><span class="meta"><span class="req">必須</span></span></div><select id="method"><option>元利均等</option><option>元金均等</option></select></div>
+      <div class="field"><div class="label-row"><span class="title">住宅区分</span><span class="meta"><button type="button" class="info" data-pop="cat-tip">?</button></span></div>
+        <select id="cat"><option value="" selected>— 選択なし —</option><option>認定</option><option>ZEH</option><option>省エネ</option><option>その他</option></select>
+        <div id="cat-tip" class="popover" hidden><b>住宅区分の目安</b><br>認定：認定長期優良住宅・低炭素住宅など。<br>ZEH：ネット・ゼロ・エネルギー・ハウス。<br>省エネ：省エネ基準適合。<br>その他：上記以外。</div>
       </div>
     </div>
 
-    <!-- 住民税所得割額（自動計算） -->
+    <!-- 住民税所得割額（自動/手入力） -->
     <div class="grid1">
-      <div class="field">
-        <div class="label-row"><span class="title">住民税所得割額（自動計算）（調整控除前相当）（円）</span><span class="meta"><label class="toggle nowrap">手入力 <input type="checkbox" id="R-manual"></label></span></div>
-        <input id="R-auto" readonly>
-        <input id="R-man" class="alt" inputmode="numeric" placeholder="円（手入力）" style="display:none">
+      <div class="field"><div class="label-row"><span class="title">住民税所得割額（自動計算）（調整控除前相当）（円）</span><span class="meta"><label class="toggle nowrap">手入力 <input type="checkbox" id="R-manual"></label></span></div>
+        <input id="R-auto" readonly><input id="R-man" class="alt" inputmode="numeric" placeholder="円（手入力）" style="display:none">
       </div>
     </div>
 
-    <!-- 年末残高：最後に配置 -->
+    <!-- 年末残高（最後） -->
     <div class="grid1">
-      <div class="field">
-        <div class="label-row"><span class="title">年末残高（自動計算）（円）</span><span class="meta"><label class="toggle nowrap">手入力 <input type="checkbox" id="yb-manual"></label></span></div>
-        <input id="yearend-auto" readonly>
-        <input id="yearend-man" class="alt" inputmode="numeric" placeholder="円（手入力）" style="display:none">
+      <div class="field"><div class="label-row"><span class="title">年末残高（自動計算）（円）</span><span class="meta"><label class="toggle nowrap">手入力 <input type="checkbox" id="yb-manual"></label></span></div>
+        <input id="yearend-auto" readonly><input id="yearend-man" class="alt" inputmode="numeric" placeholder="円（手入力）" style="display:none">
       </div>
     </div>
 
-    <div class="actions">
-      <button id="calc" class="primary">ふるさと納税限度額計算</button>
-      <div id="err" class="error-msg" style="display:none"></div>
-    </div>
-
-    <div class="result" id="resultBox">
-      <div class="big" id="dmax"></div>
-      <button class="more" id="more" aria-expanded="false">詳細を見る</button>
-      <div class="details" id="details" style="display:none"></div>
-      <div class="disclaimer">※ 本シミュレーションは概算です。実際の控除・上限は税制・個別要件等により異なる場合があります。</div>
-    </div>
+    <div class="actions"><button id="calc" class="primary">ふるさと納税限度額計算</button><div id="err" class="error-msg" style="display:none"></div></div>
+    <div class="result" id="resultBox"><div class="big" id="dmax"></div><button class="more" id="more" aria-expanded="false">詳細を見る</button><div class="details" id="details" style="display:none"></div><div class="disclaimer">※ 本シミュレーションは概算です。</div></div>
   </section>
 </main>
 
-<script src="app.js?v=7.5.2sp"></script>
+<script src="app.js?v=7.5.2-3"></script>
 </body></html>
