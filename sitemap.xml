@@ -1,7 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://furujyutaku.jp/</loc></url>
-  <url><loc>https://furujyutaku.jp/privacy.html</loc></url>
-  <url><loc>https://furujyutaku.jp/disclaimer.html</loc></url>
-  <url><loc>https://furujyutaku.jp/about.html</loc></url>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://furujyutaku.jp/</loc><lastmod>2025-10-08T06:30:06Z</lastmod><priority>1.0</priority></url>
 </urlset>
