@@ -1,4 +1,16 @@
 
+function markError(el){ if(el) el.classList.add('error-input'); }
+function clearErrors(scope){
+  scope.querySelectorAll('.error-input').forEach(x=> x.classList.remove('error-input'));
+  const old = scope.querySelector('.error-msg'); if(old) old.remove();
+}
+function ensureErrorBox(scope){
+  let box = scope.querySelector('.error-msg'); 
+  if(!box){ box = document.createElement('div'); box.className='error-msg'; scope.querySelector('.actions').after(box); }
+  return box;
+}
+
+
 function setResult(prefix, Dmax, detailsHtml){
   const big = document.getElementById(prefix+'-dmax');
   const btn = document.getElementById(prefix+'-more');
@@ -166,7 +178,21 @@ document.getElementById('s1-calc').addEventListener('click', ()=>{
   const out=document.getElementById('s1-out');
   const sum=document.getElementById('s1-summary');
 
-  if(!pref||!salaryMan||!age||!sy||!sm||!principalMan||!years||!rate||!targetY){ out.textContent='必須項目をすべて入力してください。'; return; }
+  
+  const scope = document.getElementById('tab-simple');
+  clearErrors(scope);
+  const err = [];
+  function gE(id){return document.getElementById(id);}
+  if(!pref){ err.push('居住地'); markError(gE('s1-pref')); }
+  if(!salaryMan){ err.push('年収'); markError(gE('s1-salary')); }
+  if(!age){ err.push('年齢'); markError(gE('s1-age')); }
+  if(!ym){ err.push('借入開始年月'); markError(gE('s1-start-ym')); }
+  if(!principalMan){ err.push('借入総額'); markError(gE('s1-principal')); }
+  if(!years){ err.push('返済年数'); markError(gE('s1-years')); }
+  if(!rate){ err.push('年利'); markError(gE('s1-rate')); }
+  if(!targetY){ err.push('対象年'); markError(gE('s1-target-y')); }
+  if(err.length){ const box=ensureErrorBox(scope); box.textContent='入力不備：' + err.join('、') + ' を確認してください。'; return; }
+
 
   const g=salaryMan*10000, principal=principalMan*10000;
   const addOthers=0;
@@ -193,17 +219,19 @@ document.getElementById('s1-calc').addEventListener('click', ()=>{
     `所得税で使用：${fmtJPY(usedIT)} 円 ／ 住民税側控除：<strong>${fmtJPY(loanResCredit)} 円</strong><br>`+
     `住民税所得割（推定）：${fmtJPY(R)} 円 ／ 特例上限（20%）：${fmtJPY(capA)} 円 ／ 住民税残：${fmtJPY(capB)} 円`;
   setResult('s1', Dmax, details1);
+  document.getElementById('s1-dmax').closest('.result').classList.add('show');
 });
 
 // ------- PRECISE -------
 function computeYearEndS2(){
-  const principal=manToYen(document.getElementById('s2-principal').value);
-  const rate=parseNum(document.getElementById('s2-rate').value);
-  const ym2=document.getElementById('s2-start-ym').value; const sy=parseInt(ym2? ym2.split('-')[0]:0);
-  const sm=parseInt(ym2? ym2.split('-')[1]:0);
-  const years=parseNum(document.getElementById('s2-years').value);
-  const targetY=parseNum(document.getElementById('s2-target-y').value);
-  const method=document.getElementById('s2-method').value;
+  const principal=manToYen(document.getElementById('s2-principal')?.value);
+  const rate=parseNum(document.getElementById('s2-rate')?.value);
+  const ym=document.getElementById('s2-start-ym')?.value||'';
+  const sy= ym? Number(ym.split('-')[0]):0;
+  const sm= ym? Number(ym.split('-')[1]):0;
+  const years=parseNum(document.getElementById('s2-years')?.value);
+  const targetY=parseNum(document.getElementById('s2-target-y')?.value);
+  const method=document.getElementById('s2-method')?.value;
   if(!principal||!rate||!sy||!sm||!years||!targetY) return NaN;
   return yearEndBalance(principal, rate, sy, sm, targetY, years, method);
 }
@@ -225,7 +253,7 @@ document.getElementById('s2-calc').addEventListener('click', ()=>{
   const pref=document.getElementById('s2-pref').value;
   const salaryMan=parseNum(document.getElementById('s2-salary').value);
   const age=parseNum(document.getElementById('s2-age').value);
-  const ym2=document.getElementById('s2-start-ym').value; const sy=parseInt(ym2? ym2.split('-')[0]:0);
+  const ym2=document.getElementById('s2-start-ym').value; const ym2=document.getElementById('s2-start-ym').value; const sy=parseInt(ym2? ym2.split('-')[0]:0);
   const sm=parseInt(ym2? ym2.split('-')[1]:0);
   const principalMan=parseNum(document.getElementById('s2-principal').value);
   const years=parseNum(document.getElementById('s2-years').value);
@@ -244,7 +272,21 @@ document.getElementById('s2-calc').addEventListener('click', ()=>{
   const out=document.getElementById('s2-out');
   const sum=document.getElementById('s2-summary');
 
-  if(!pref||!salaryMan||!age||!sy||!sm||!principalMan||!years||!rate||!targetY){ out.textContent='必須項目をすべて入力してください。'; return; }
+  
+  const scope = document.getElementById('tab-simple');
+  clearErrors(scope);
+  const err = [];
+  function gE(id){return document.getElementById(id);}
+  if(!pref){ err.push('居住地'); markError(gE('s1-pref')); }
+  if(!salaryMan){ err.push('年収'); markError(gE('s1-salary')); }
+  if(!age){ err.push('年齢'); markError(gE('s1-age')); }
+  if(!ym){ err.push('借入開始年月'); markError(gE('s1-start-ym')); }
+  if(!principalMan){ err.push('借入総額'); markError(gE('s1-principal')); }
+  if(!years){ err.push('返済年数'); markError(gE('s1-years')); }
+  if(!rate){ err.push('年利'); markError(gE('s1-rate')); }
+  if(!targetY){ err.push('対象年'); markError(gE('s1-target-y')); }
+  if(err.length){ const box=ensureErrorBox(scope); box.textContent='入力不備：' + err.join('、') + ' を確認してください。'; return; }
+
 
   const g=salaryMan*10000, addOthers=(realMan+sideMan)*10000;
   const { taxableIT } = taxableITFromIncome(g, age, addOthers);
@@ -277,6 +319,7 @@ document.getElementById('s2-calc').addEventListener('click', ()=>{
     `所得税で使用：${fmtJPY(usedIT)} 円 ／ 住民税側控除：<strong>${fmtJPY(loanResCredit)} 円</strong><br>`+
     `R（住民税所得割）：${fmtJPY(R)} 円 ／ 特例上限（20%）：${fmtJPY(capA)} 円 ／ 住民税残：${fmtJPY(capB)} 円`;
   setResult('s2', Dmax, details2);
+  document.getElementById('s2-dmax').closest('.result').classList.add('show');
 });
 
 // ------- PLAIN -------
@@ -304,7 +347,17 @@ document.getElementById('s3-calc').addEventListener('click', ()=>{
   const out=document.getElementById('s3-out');
   const sum=document.getElementById('s3-summary');
 
-  if(!pref||!salaryMan||!age){ out.textContent='必須項目（居住地・年収・年齢）を入力してください。'; return; }
+  
+  const scope = document.getElementById('tab-plain');
+  clearErrors(scope);
+  const err = [];
+  function gE(id){return document.getElementById(id);}
+  if(!pref){ err.push('居住地'); markError(gE('s3-pref')); }
+  if(!salaryMan){ err.push('年収'); markError(gE('s3-salary')); }
+  if(!age){ err.push('年齢'); markError(gE('s3-age')); }
+  if(isNaN(muniExtra) || String(muniExtra)===''){ err.push('市区町村の超過課税'); markError(gE('s3-muni-extra')); }
+  if(err.length){ const box=ensureErrorBox(scope); box.textContent='入力不備：' + err.join('、') + ' を確認してください。'; return; }
+
 
   const g=salaryMan*10000;
   const realMan=parseNum(document.getElementById('s3-real').value);
@@ -327,7 +380,9 @@ document.getElementById('s3-calc').addEventListener('click', ()=>{
   const { appliedRate } = residentShareFromIncome(g, age, addOthers, pref, muniExtra);
   const details3 = `R（住民税所得割）：${fmtJPY(R)} 円 ／ 特例上限（20%）：${fmtJPY(capA)} 円 ／ 住民税残：${fmtJPY(capB)} 円`;
   setResult('s3', Dmax, details3);
+  document.getElementById('s3-dmax').closest('.result').classList.add('show');
   setResult('s2', Dmax, details2);
+  document.getElementById('s2-dmax').closest('.result').classList.add('show');
 });
 
 // ---- Feature banner ----
@@ -338,3 +393,46 @@ document.getElementById('s3-calc').addEventListener('click', ()=>{
     if(w) w.style.display = 'block';
   }
 })();
+
+const FEEDBACK_EMAIL = 'gwycoco@gmail.com';
+const fbMask = document.getElementById('fbMask');
+const fbModal = document.getElementById('fbModal');
+const fbOpen = document.getElementById('fbOpen');
+const fbClose = document.getElementById('fbClose');
+const fbForm = document.getElementById('fbForm');
+const fbPreview = document.getElementById('fbPreview');
+const fbConfirm = document.getElementById('fbConfirm');
+const fbSend = document.getElementById('fbSend');
+const fbMsg = document.getElementById('fbMsg');
+
+function openFb(){ fbMask.style.display='block'; fbModal.style.display='flex'; }
+function closeFb(){ fbMask.style.display='none'; fbModal.style.display='none'; fbConfirm.style.display='none'; fbForm.style.display='block'; fbForm.reset(); fbMsg.textContent=''; }
+fbOpen.addEventListener('click', openFb);
+fbClose.addEventListener('click', closeFb);
+fbMask.addEventListener('click', closeFb);
+
+fbPreview.addEventListener('click', ()=>{
+  fbMsg.textContent='';
+  const fd = new FormData(fbForm);
+  const name = (fd.get('name')||'').toString().trim();
+  const email = (fd.get('email')||'').toString().trim();
+  const message = (fd.get('message')||'').toString().trim();
+  fbForm.querySelectorAll('input,textarea').forEach(el=> el.classList.remove('error-input'));
+  if(!message){ fbMsg.textContent='「ご要望」は必須です。'; fbForm.querySelector('[name=message]').classList.add('error-input'); return; }
+  document.getElementById('c_name').textContent = name||'(未入力)';
+  document.getElementById('c_email').textContent = email||'(未入力)';
+  document.getElementById('c_message').textContent = message;
+  fbForm.style.display='none'; fbConfirm.style.display='block';
+});
+
+fbSend.addEventListener('click', ()=>{
+  const name = document.getElementById('c_name').textContent;
+  const email = document.getElementById('c_email').textContent;
+  const message = document.getElementById('c_message').textContent;
+  const subject = encodeURIComponent('【改良リクエスト】ふるさと納税×住宅ローン控除');
+  const body = encodeURIComponent(`お名前: ${name}\nメール: ${email}\n\nご要望:\n${message}`);
+  const a = document.createElement('a');
+  a.href = `mailto:${FEEDBACK_EMAIL}?subject=${subject}&body=${body}`;
+  document.body.appendChild(a); a.click(); a.remove();
+  closeFb();
+});

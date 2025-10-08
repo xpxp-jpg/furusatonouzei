@@ -53,7 +53,7 @@
     <button data-tab="simple" class="active">簡単版</button>
     <button data-tab="precise">精確版</button>
     <button data-tab="plain">住宅ローンなし版</button>
-  </nav>
+  </nav><button id="btn-reset" class="reset-all">全内容消去</button>
 </header>
 
 <div id="compatWarn" class="wrap" style="display:none;margin-top:8px">
@@ -119,19 +119,19 @@
 <option value="沖縄県">沖縄県</option>
 </select>
       </div>
-      <div class="field"><div class="label-row"><span class="title">年収</span><span class="meta"><span class="req">必須</span><span class="unit">万円</span></span></div>
+      <div class="field"><div class="label-row"><span class="title">年収（万円）</span><span class="meta"><span class="req">必須</span></span></div>
         <input id="s1-salary" inputmode="numeric" placeholder="例：700" /></div>
       <div class="field"><div class="label-row"><span class="title">年齢</span><span class="meta"><span class="req">必須</span></span></div>
         <input id="s1-age" inputmode="numeric" placeholder="例：38" /></div>
       <div class="field">
   <div class="label-row"><span class="title">借入開始年月 <span class="unit">（YYYY-MM）</span></span></div>
-  <input id="s1-start-ym" type="month" />
+  <input id="s1-start-ym" type="text" placeholder="YYYY-MM" inputmode="numeric" />
 </div>
-      <div class="field"><div class="label-row"><span class="title">借入総額</span><span class="meta"><span class="req">必須</span><span class="unit">万円</span></span></div>
+      <div class="field"><div class="label-row"><span class="title">借入総額（万円）</span><span class="meta"><span class="req">必須</span></span></div>
         <input id="s1-principal" inputmode="numeric" placeholder="例：4500" /></div>
-      <div class="field"><div class="label-row"><span class="title">返済年数</span><span class="meta"><span class="req">必須</span><span class="unit">年</span></span></div>
+      <div class="field"><div class="label-row"><span class="title">返済年数（年）</span><span class="meta"><span class="req">必須</span></span></div>
         <input id="s1-years" inputmode="numeric" placeholder="例：35" /></div>
-      <div class="field"><div class="label-row"><span class="title">年利</span><span class="meta"><span class="req">必須</span><span class="unit">%</span></span></div>
+      <div class="field"><div class="label-row"><span class="title">年利（%）</span><span class="meta"><span class="req">必須</span></span></div>
         <input id="s1-rate" inputmode="decimal" placeholder="例：0.9" /></div>
       <div class="field"><div class="label-row"><span class="title">利息計算方式</span><span class="meta"><span class="req">必須</span></span></div>
         <select id="s1-method"><option>元利均等</option><option>元金均等</option></select></div>
@@ -215,19 +215,19 @@
 <option value="鹿児島県">鹿児島県</option>
 <option value="沖縄県">沖縄県</option>
 </select></div>
-      <div class="field"><div class="label-row"><span class="title">年収</span><span class="meta"><span class="req">必須</span><span class="unit">万円</span></span></div>
+      <div class="field"><div class="label-row"><span class="title">年収（万円）</span><span class="meta"><span class="req">必須</span></span></div>
         <input id="s2-salary" inputmode="numeric" placeholder="例：900" /></div>
       <div class="field"><div class="label-row"><span class="title">年齢</span><span class="meta"><span class="req">必須</span></span></div>
         <input id="s2-age" inputmode="numeric" placeholder="例：40" /></div>
       <div class="field">
   <div class="label-row"><span class="title">借入開始年月 <span class="unit">（YYYY-MM）</span></span></div>
-  <input id="s2-start-ym" type="month" />
+  <input id="s2-start-ym" type="text" placeholder="YYYY-MM" inputmode="numeric" />
 </div>
-      <div class="field"><div class="label-row"><span class="title">借入総額</span><span class="meta"><span class="req">必須</span><span class="unit">万円</span></span></div>
+      <div class="field"><div class="label-row"><span class="title">借入総額（万円）</span><span class="meta"><span class="req">必須</span></span></div>
         <input id="s2-principal" inputmode="numeric" placeholder="例：6000" /></div>
-      <div class="field"><div class="label-row"><span class="title">返済年数</span><span class="meta"><span class="req">必須</span><span class="unit">年</span></span></div>
+      <div class="field"><div class="label-row"><span class="title">返済年数（年）</span><span class="meta"><span class="req">必須</span></span></div>
         <input id="s2-years" inputmode="numeric" placeholder="例：35" /></div>
-      <div class="field"><div class="label-row"><span class="title">年利</span><span class="meta"><span class="req">必須</span><span class="unit">%</span></span></div>
+      <div class="field"><div class="label-row"><span class="title">年利（%）</span><span class="meta"><span class="req">必須</span></span></div>
         <input id="s2-rate" inputmode="decimal" placeholder="例：0.8" /></div>
       <div class="field"><div class="label-row"><span class="title">利息計算方式</span><span class="meta"><span class="req">必須</span></span></div>
         <select id="s2-method"><option>元利均等</option><option>元金均等</option></select></div>
@@ -331,14 +331,14 @@
 <option value="鹿児島県">鹿児島県</option>
 <option value="沖縄県">沖縄県</option>
 </select></div>
-      <div class="field"><div class="label-row"><span class="title">年収</span><span class="meta"><span class="req">必須</span><span class="unit">万円</span></span></div>
+      <div class="field"><div class="label-row"><span class="title">年収（万円）</span><span class="meta"><span class="req">必須</span></span></div>
         <input id="s3-salary" inputmode="numeric" placeholder="例：700" /></div>
       <div class="field"><div class="label-row"><span class="title">年齢</span><span class="meta"><span class="req">必須</span></span></div>
         <input id="s3-age" inputmode="numeric" placeholder="例：38" /></div>
       <div class="field">
         <div class="label-row">
-          <span class="title">住民税所得割額（自動計算・調整控除前相当）</span>
-          <span class="meta"><span class="unit">円</span><label class="toggle nowrap">手入力<input type="checkbox" id="s3-R-manual"></label></span>
+          <span class="title">住民税所得割額（自動計算・調整控除前相当・円）</span>
+          <span class="meta"><label class="toggle nowrap">手入力<input type="checkbox" id="s3-R-manual"></label></span>
         </div>
         <input id="s3-R-auto" placeholder="自動計算…" disabled />
         <input id="s3-R-man" placeholder="例：50（万円）" class="alt" style="display:none" />
@@ -354,25 +354,7 @@
 </div>
   </section>
 
-<section class="wrap feedback">
-  <h2>改良リクエスト</h2>
-  <form id="feedbackForm" method="POST" action="https://formspree.io/f/your-id">
-    <div class="row"><label>お名前（任意）</label><input name="name" placeholder="山田 太郎"></div>
-    <div class="row"><label>ご要望<span class="req">必須</span></label><textarea name="message" required placeholder="追加したい項目、計算仕様の希望、表示改善など"></textarea></div>
-    <div class="row"><button type="submit">送信</button><span id="fbStatus" class="muted"></span></div>
-  </form>
-</section>
-<script>
-document.getElementById('feedbackForm').addEventListener('submit', async (e)=>{
-  e.preventDefault();
-  const form = e.target;
-  const data = new FormData(form);
-  const res = await fetch(form.action, {{ method:'POST', body: data, headers: {{ 'Accept': 'application/json' }} }});
-  const ok = res.ok;
-  document.getElementById('fbStatus').textContent = ok ? '送信しました。ご協力ありがとうございます。' : '送信に失敗しました。しばらくしてからお試しください。';
-  if(ok) form.reset();
-});
-</script>
+
 
 </main>
 
@@ -386,4 +368,30 @@ document.getElementById('feedbackForm').addEventListener('submit', async (e)=>{
 document.getElementById('last').textContent = new Date().toISOString().slice(0,10);
 document.getElementById('year').textContent = new Date().getFullYear();
 </script>
+
+<div id="fbMask" class="mask" style="display:none"></div>
+<div id="fbModal" class="modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="fbTitle">
+  <div class="modal-box">
+    <div class="modal-head"><h3 id="fbTitle">改良リクエスト</h3><button id="fbClose" class="x">×</button></div>
+    <div class="modal-body">
+      <form id="fbForm" novalidate>
+        <div class="row"><label>お名前（任意）</label><input name="name" placeholder="山田 太郎"></div>
+        <div class="row"><label>メール（任意）</label><input name="email" type="email" placeholder="name@example.com"></div>
+        <div class="row"><label>ご要望　<span class="req">必須</span></label><textarea name="message" required placeholder="追加したい項目、計算仕様の希望、表示改善など"></textarea></div>
+        <div class="row act"><button type="button" id="fbPreview">内容確認</button><span id="fbMsg" class="muted"></span></div>
+      </form>
+      <div id="fbConfirm" style="display:none">
+        <h4>内容確認</h4>
+        <div class="confirm">
+          <div><b>お名前</b></div><div id="c_name"></div>
+          <div><b>メール</b></div><div id="c_email"></div>
+          <div><b>ご要望</b></div><div id="c_message" style="white-space:pre-wrap"></div>
+        </div>
+        <div class="row act"><button id="fbSend">送信</button></div>
+      </div>
+    </div>
+  </div>
+</div>
+<button id="fbOpen" class="feedback-fab">改良リクエスト</button>
+
 </body></html>
