@@ -1,0 +1,9 @@
+{
+  "name": "ふるさと納税 × 住宅ローン控除 統合シミュレーター",
+  "short_name": "納税×住宅控除",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#111111",
+  "icons": []
+}

@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ふるさと納税 × 住宅ローン控除 統合シミュレーター</title>
+  <meta name="description" content="ふるさと納税の上限額・住宅ローン控除（住民税側）・住民税所得割（控除前）をブラウザ内で安全に計算します。データは一切送信されません。" />
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="stylesheet" href="/styles.css" />
+  <script>
+    // AdSense placeholder — replace CLIENT when approved
+    // (Uncomment after AdSense approval)
+    // (ads will not show until Google approves your site)
+    // window.addEventListener('load', ()=>{
+    //   const s = document.createElement('script');
+    //   s.async = true;
+    //   s.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX";
+    //   s.crossOrigin = "anonymous";
+    //   document.head.appendChild(s);
+    // });
+  </script>
+</head>
+<body>
+<header class="wrap">
+  <h1>ふるさと納税 × 住宅ローン控除 統合シミュレーター</h1>
+  <p class="tagline">（ブラウザ内ローカル計算・個人情報をサーバーに送信しません）</p>
+  <nav class="tabs">
+    <button data-tab="quick" class="active">簡易</button>
+    <button data-tab="precise">精確</button>
+    <button data-tab="loan">住宅ローン控除</button>
+    <button data-tab="resident">住民税</button>
+  </nav>
+</header>
+
+<main class="wrap">
+  <!-- Quick -->
+  <section id="tab-quick" class="tab active">
+    <h2>簡易モード（一般入力）</h2>
+    <div class="grid">
+      <label>年収（円）<input id="q-salary" inputmode="numeric" placeholder="例: 14000000"></label>
+      <label>年齢<input id="q-age" inputmode="numeric" placeholder="例: 37"></label>
+      <label>扶養（一般16-18・23-69）人数<input id="q-dep-gen" inputmode="numeric"></label>
+      <label>扶養（特定19-22）人数<input id="q-dep-sp" inputmode="numeric"></label>
+      <label>扶養（70+同居）人数<input id="q-dep-70c" inputmode="numeric"></label>
+      <label>扶養（70+非同居）人数<input id="q-dep-70n" inputmode="numeric"></label>
+      <label>配偶者年収（円・任意）<input id="q-sp-salary" inputmode="numeric"></label>
+      <label>その他住民税控除（円・任意）<input id="q-other-res" inputmode="numeric"></label>
+      <label class="check"><input type="checkbox" id="q-has-home-loan"> 住宅ローン控除あり（下の「住宅ローン控除」タブで計算）</label>
+    </div>
+    <div class="actions">
+      <button id="q-calc">計算する</button>
+    </div>
+    <div id="q-result" class="result"></div>
+    <div class="ad-slot"><!-- Ad slot placeholder --></div>
+  </section>
+
+  <!-- Precise -->
+  <section id="tab-precise" class="tab">
+    <h2>精確モード（票据入力）</h2>
+    <div class="grid">
+      <label>課税所得金額（所得税側・円）<input id="p-taxable-it" inputmode="numeric"></label>
+      <label>住民税所得割額（控除前・円）<input id="p-resident-share" inputmode="numeric"></label>
+      <label>住宅ローン控除（住民税分・円）<input id="p-loan-res" inputmode="numeric"></label>
+      <label>その他の住民税税額控除（円）<input id="p-other-res" inputmode="numeric"></label>
+    </div>
+    <p class="hint">※「住宅ローン控除」タブで住民税側控除を計算すると自動反映されます。</p>
+    <div class="actions">
+      <button id="p-calc">計算する</button>
+    </div>
+    <div id="p-result" class="result"></div>
+    <div class="ad-slot"><!-- Ad slot placeholder --></div>
+  </section>
+
+  <!-- Loan -->
+  <section id="tab-loan" class="tab">
+    <h2>住宅ローン控除（住民税側）</h2>
+    <div class="grid">
+      <label>入居年<input id="ln-movein" inputmode="numeric" placeholder="例: 2025"></label>
+      <label>対象年（計算年）<input id="ln-target" inputmode="numeric" placeholder="例: 2025"></label>
+      <label>区分
+        <select id="ln-newused">
+          <option>新築</option><option>中古/買取再販</option>
+        </select>
+      </label>
+      <label>住宅の種別
+        <select id="ln-category">
+          <option>認定</option><option>ZEH</option><option selected>省エネ</option><option>その他</option>
+        </select>
+      </label>
+      <label class="check"><input type="checkbox" id="ln-child"> 子育て・若者夫婦世帯</label>
+      <label>借入額（円）<input id="ln-principal" inputmode="numeric"></label>
+      <label>年利（%）<input id="ln-rate" inputmode="decimal" placeholder="例: 1.2"></label>
+      <label>返済年数（年）<input id="ln-years" inputmode="numeric" placeholder="例: 35"></label>
+      <label>返済方式
+        <select id="ln-method"><option>元利均等</option><option>元金均等</option></select>
+      </label>
+      <label>返済開始（年）<input id="ln-start-y" inputmode="numeric" placeholder="例: 2025"></label>
+      <label>返済開始（月）<input id="ln-start-m" inputmode="numeric" placeholder="例: 4"></label>
+    </div>
+
+    <h3>世帯の所得（所得税・住民税の配分のため）</h3>
+    <div class="grid">
+      <label>年収（円）<input id="ld-salary" inputmode="numeric"></label>
+      <label>年齢<input id="ld-age" inputmode="numeric"></label>
+      <label>扶養（一般）<input id="ld-dep-gen" inputmode="numeric"></label>
+      <label>扶養（特定19-22）<input id="ld-dep-sp" inputmode="numeric"></label>
+      <label>扶養（70+非同居）<input id="ld-dep-70n" inputmode="numeric"></label>
+      <label>扶養（70+同居）<input id="ld-dep-70c" inputmode="numeric"></label>
+      <label>配偶者年収（円・任意）<input id="ld-sp-salary" inputmode="numeric"></label>
+    </div>
+
+    <div class="actions">
+      <button id="ln-calc">計算する</button>
+    </div>
+    <div id="ln-result" class="result"></div>
+    <div class="ad-slot"><!-- Ad slot placeholder --></div>
+  </section>
+
+  <!-- Resident -->
+  <section id="tab-resident" class="tab">
+    <h2>住民税シミュレーター（都道府県）</h2>
+    <div class="grid">
+      <label>居住地（都道府県）
+        <select id="rs-pref"></select>
+      </label>
+      <label>所得割 追加率（%・任意）<input id="rs-extra" inputmode="decimal" placeholder="例: 0"></label>
+      <label>均等割：都道府県（円・任意）<input id="rs-cap-pref" inputmode="numeric"></label>
+      <label>均等割：市区町村（円・任意）<input id="rs-cap-city" inputmode="numeric"></label>
+      <label>年収（円）<input id="rs-salary" inputmode="numeric"></label>
+      <label>年齢<input id="rs-age" inputmode="numeric"></label>
+      <label>扶養（一般）<input id="rs-dep-gen" inputmode="numeric"></label>
+      <label>扶養（特定19-22）<input id="rs-dep-sp" inputmode="numeric"></label>
+      <label>扶養（70+非同居）<input id="rs-dep-70n" inputmode="numeric"></label>
+      <label>扶養（70+同居）<input id="rs-dep-70c" inputmode="numeric"></label>
+      <label>配偶者年収（円・任意）<input id="rs-sp-salary" inputmode="numeric"></label>
+      <label>その他住民税税額控除（円・任意）<input id="rs-other" inputmode="numeric"></label>
+    </div>
+    <div class="actions">
+      <button id="rs-calc">住民税を計算</button>
+      <button id="rs-apply">精確モードへ反映</button>
+    </div>
+    <div id="rs-result" class="result"></div>
+    <div class="ad-slot"><!-- Ad slot placeholder --></div>
+  </section>
+</main>
+
+<footer class="wrap foot">
+  <div>
+    <a href="/about.html">運営者情報</a>｜
+    <a href="/privacy.html">プライバシーポリシー</a>｜
+    <a href="/disclaimer.html">免責事項</a>
+  </div>
+  <small>最終更新: <span id="last-updated"></span>｜PWA 対応（オフライン可）｜© <span id="year"></span></small>
+</footer>
+
+<script src="/app.js"></script>
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').catch(()=>{});
+  }
+  document.getElementById('last-updated').textContent = new Date().toISOString().slice(0,10);
+  document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+</body></html>
