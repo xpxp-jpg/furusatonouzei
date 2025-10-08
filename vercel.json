@@ -1,0 +1,15 @@
+{
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.furujyutaku.jp"
+        }
+      ],
+      "destination": "https://furujyutaku.jp/$1",
+      "permanent": true
+    }
+  ]
+}

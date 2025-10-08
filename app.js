@@ -1,7 +1,7 @@
-// ------- Prefecture adjustments (example: 神奈川県 +0.025%) -------
+// ------- Prefecture small adjustment example -------
 const PREF_INCOME_LEVY_EXTRA = { "神奈川県": 0.00025 };
 
-// ------- Utils with Intl fallback -------
+// ------- Utils -------
 const NUMFMT = (typeof Intl !== 'undefined' && Intl.NumberFormat)
   ? new Intl.NumberFormat('ja-JP')
   : { format: (n)=> String(Math.round(n||0)).replace(/\B(?=(\d{3})+(?!\d))/g, ',') };

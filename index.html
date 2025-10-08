@@ -3,20 +3,46 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ふるさと納税 × 住宅ローン控除（v7.2）</title>
-  <meta name="description" content="年収700万円以上・住宅ローンありの方向け。都道府県を考慮した上限試算ツール。" />
+  <title>ふるさと納税 × 住宅ローン控除（SEO v7.3）</title>
   <link rel="stylesheet" href="styles.css" />
   
-<!-- Google AdSense Auto ads -->
+<!-- AdSense Auto ads -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5317898094646973" crossorigin="anonymous"></script>
-
-<!-- Google Analytics 4 -->
+<!-- GA4 -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-YS6NM3C8KG"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
   gtag('config', 'G-YS6NM3C8KG');
+</script>
+
+<!-- SEO: canonical / meta / OG / Twitter -->
+<link rel="canonical" href="https://furujyutaku.jp/" />
+<meta name="description" content="ふるさと納税と住宅ローン控除の併用上限を、都道府県・年収・ローン条件からわかりやすく試算できる無料ツール。簡易/精確/ローンなしに対応。" />
+<meta name="robots" content="index,follow" />
+<meta name="language" content="ja" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="ふるさと納税×住宅ローン控除シミュレーター" />
+<meta property="og:description" content="年収・ローン条件から上限を即時計算。簡易/精確/ローンなしの3モードに対応。" />
+<meta property="og:url" content="https://furujyutaku.jp/" />
+<meta property="og:image" content="https://furujyutaku.jp/og-image.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="ふるさと納税×住宅ローン控除シミュレーター" />
+<meta name="twitter:description" content="年収・ローン条件から上限を即時計算。簡易/精確/ローンなしの3モードに対応。" />
+<meta name="twitter:image" content="https://furujyutaku.jp/og-image.png" />
+
+<!-- JSON-LD -->
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"SoftwareApplication",
+  "name":"ふるさと納税×住宅ローン控除シミュレーター",
+  "applicationCategory":"FinanceApplication",
+  "operatingSystem":"Web",
+  "offers":{"@type":"Offer","price":"0","priceCurrency":"JPY"},
+  "url":"https://furujyutaku.jp/"
+}
 </script>
 
 </head>
@@ -42,9 +68,7 @@
     <div class="lead">年収700万円以上・住宅ローンありの方向けに最適化。</div>
     <div class="grid">
       <div class="field">
-        <div class="label-row">
-          <span class="title">居住地（都道府県）</span><span class="meta"><span class="req">必須</span></span>
-        </div>
+        <div class="label-row"><span class="title">居住地（都道府県）</span><span class="meta"><span class="req">必須</span></span></div>
         <select id="s1-pref">
 <option value="北海道">北海道</option>
 <option value="青森県">青森県</option>
@@ -94,14 +118,11 @@
 <option value="鹿児島県">鹿児島県</option>
 <option value="沖縄県">沖縄県</option>
 </select>
-        <div class="note">一部自治体では所得割に微小な上乗せがあります（自動反映）。</div>
       </div>
-
       <div class="field"><div class="label-row"><span class="title">年収</span><span class="meta"><span class="req">必須</span><span class="unit">万円</span></span></div>
         <input id="s1-salary" inputmode="numeric" placeholder="例：700" /></div>
       <div class="field"><div class="label-row"><span class="title">年齢</span><span class="meta"><span class="req">必須</span></span></div>
         <input id="s1-age" inputmode="numeric" placeholder="例：38" /></div>
-
       <div class="field"><div class="label-row"><span class="title">借入開始（年）</span><span class="meta"><span class="req">必須</span></span></div>
         <input id="s1-start-y" inputmode="numeric" placeholder="例：2023" /></div>
       <div class="field"><div class="label-row"><span class="title">借入開始（月）</span><span class="meta"><span class="req">必須</span></span></div>
@@ -114,35 +135,24 @@
         <input id="s1-rate" inputmode="decimal" placeholder="例：0.9" /></div>
       <div class="field"><div class="label-row"><span class="title">利息計算方式</span><span class="meta"><span class="req">必須</span></span></div>
         <select id="s1-method"><option>元利均等</option><option>元金均等</option></select></div>
-
       <div class="field">
         <div class="label-row tip-row">
           <span class="title">住宅区分</span>
           <span class="meta"><span class="req">必須</span><span class="q" data-tip="認定：長期優良・低炭素。ZEH：ゼロエネルギー。省エネ：基準適合。その他：上記以外。">?</span></span>
         </div>
         <select id="s1-cat">
-          <option value="認定">認定</option>
-          <option value="ZEH">ZEH</option>
-          <option value="省エネ" selected>省エネ</option>
-          <option value="その他">その他</option>
+          <option value="認定">認定</option><option value="ZEH">ZEH</option>
+          <option value="省エネ" selected>省エネ</option><option value="その他">その他</option>
         </select>
       </div>
       <div class="field"><div class="label-row"><span class="title">新築 / 中古</span><span class="meta"><span class="req">必須</span></span></div>
         <select id="s1-newused"><option>新築</option><option>中古</option></select></div>
-      <div class="field">
-        <div class="label-row">
-          <span class="title">子育て・若者夫婦（任意）</span>
-          <span class="meta"><label class="switch nowrap"><input type="checkbox" id="s1-child"><span>適用する</span></label></span>
-        </div>
-      </div>
-
+      <div class="field"><div class="label-row"><span class="title">子育て・若者夫婦（任意）</span><span class="meta"><label class="switch nowrap"><input type="checkbox" id="s1-child"><span>適用する</span></label></span></div></div>
       <div class="field"><div class="label-row"><span class="title">対象年（計算年）</span><span class="meta"><span class="req">必須</span></span></div>
         <input id="s1-target-y" inputmode="numeric" placeholder="例：2025" /></div>
-
-      <div class="field"><div class="label-row"><span class="title">市区町村の超過課税（所得割・任意）</span><span class="meta"><span class="unit">％</span></span></div>
+      <div class="field"><div class="label-row"><span class="title">市区町村の超過課税（任意）</span><span class="meta"><span class="unit">％</span></span></div>
         <input id="s1-muni-extra" inputmode="decimal" placeholder="例：0.10（豊岡市など）" /></div>
     </div>
-
     <div class="actions"><button id="s1-calc">上限を計算</button></div>
     <div id="s1-summary" class="summary"></div>
     <div id="s1-out" class="result"></div>
@@ -202,12 +212,10 @@
 <option value="鹿児島県">鹿児島県</option>
 <option value="沖縄県">沖縄県</option>
 </select></div>
-
       <div class="field"><div class="label-row"><span class="title">年収</span><span class="meta"><span class="req">必須</span><span class="unit">万円</span></span></div>
         <input id="s2-salary" inputmode="numeric" placeholder="例：900" /></div>
       <div class="field"><div class="label-row"><span class="title">年齢</span><span class="meta"><span class="req">必須</span></span></div>
         <input id="s2-age" inputmode="numeric" placeholder="例：40" /></div>
-
       <div class="field"><div class="label-row"><span class="title">借入開始（年）</span><span class="meta"><span class="req">必須</span></span></div>
         <input id="s2-start-y" inputmode="numeric" placeholder="例：2022" /></div>
       <div class="field"><div class="label-row"><span class="title">借入開始（月）</span><span class="meta"><span class="req">必須</span></span></div>
@@ -220,28 +228,19 @@
         <input id="s2-rate" inputmode="decimal" placeholder="例：0.8" /></div>
       <div class="field"><div class="label-row"><span class="title">利息計算方式</span><span class="meta"><span class="req">必須</span></span></div>
         <select id="s2-method"><option>元利均等</option><option>元金均等</option></select></div>
-
       <div class="field">
         <div class="label-row tip-row">
           <span class="title">住宅区分</span>
           <span class="meta"><span class="req">必須</span><span class="q" data-tip="認定：長期優良・低炭素。ZEH：ゼロエネ。省エネ：適合。その他：上記以外。">?</span></span>
         </div>
         <select id="s2-cat">
-          <option value="認定">認定</option>
-          <option value="ZEH">ZEH</option>
-          <option value="省エネ" selected>省エネ</option>
-          <option value="その他">その他</option>
+          <option value="認定">認定</option><option value="ZEH">ZEH</option>
+          <option value="省エネ" selected>省エネ</option><option value="その他">その他</option>
         </select>
       </div>
       <div class="field"><div class="label-row"><span class="title">新築 / 中古</span><span class="meta"><span class="req">必須</span></span></div>
         <select id="s2-newused"><option>新築</option><option>中古</option></select></div>
-      <div class="field">
-        <div class="label-row">
-          <span class="title">子育て・若者夫婦（任意）</span>
-          <span class="meta"><label class="switch nowrap"><input type="checkbox" id="s2-child"><span>適用する</span></label></span>
-        </div>
-      </div>
-
+      <div class="field"><div class="label-row"><span class="title">子育て・若者夫婦（任意）</span><span class="meta"><label class="switch nowrap"><input type="checkbox" id="s2-child"><span>適用する</span></label></span></div></div>
       <div class="field"><div class="label-row"><span class="title">対象年（計算年）</span><span class="meta"><span class="req">必須</span></span></div>
         <input id="s2-target-y" inputmode="numeric" placeholder="例：2025" /></div>
 
@@ -252,7 +251,6 @@
         </div>
         <input id="s2-yearend-auto" placeholder="自動計算…" disabled />
         <input id="s2-yearend-man" placeholder="例：3200（万円）" class="alt" style="display:none" />
-        <div class="note">※ 借入情報から12月末時点の概算。手入力では証明書の値（万円）を直接設定できます。</div>
       </div>
 
       <div class="field">
@@ -262,10 +260,9 @@
         </div>
         <input id="s2-R-auto" placeholder="自動計算…" disabled />
         <input id="s2-R-man" placeholder="例：50（万円）" class="alt" style="display:none" />
-        <div class="note">※ 都道府県の所得割率＋（任意）市区町村の上乗せを考慮した概算。e-Tax数値で上書き可。</div>
       </div>
 
-      <div class="field"><div class="label-row"><span class="title">市区町村の超過課税（所得割・任意）</span><span class="meta"><span class="unit">％</span></span></div>
+      <div class="field"><div class="label-row"><span class="title">市区町村の超過課税（任意）</span><span class="meta"><span class="unit">％</span></span></div>
         <input id="s2-muni-extra" inputmode="decimal" placeholder="例：0.10（豊岡市など）" /></div>
 
       <div class="field"><div class="label-row"><span class="title">不動産所得（任意）</span><span class="meta"><span class="unit">万円</span></span></div>
@@ -335,12 +332,10 @@
 <option value="鹿児島県">鹿児島県</option>
 <option value="沖縄県">沖縄県</option>
 </select></div>
-
       <div class="field"><div class="label-row"><span class="title">年収</span><span class="meta"><span class="req">必須</span><span class="unit">万円</span></span></div>
         <input id="s3-salary" inputmode="numeric" placeholder="例：700" /></div>
       <div class="field"><div class="label-row"><span class="title">年齢</span><span class="meta"><span class="req">必須</span></span></div>
         <input id="s3-age" inputmode="numeric" placeholder="例：38" /></div>
-
       <div class="field">
         <div class="label-row">
           <span class="title">住民税所得割額（自動計算・調整控除前相当）</span>
@@ -349,16 +344,13 @@
         <input id="s3-R-auto" placeholder="自動計算…" disabled />
         <input id="s3-R-man" placeholder="例：50（万円）" class="alt" style="display:none" />
       </div>
-
-      <div class="field"><div class="label-row"><span class="title">市区町村の超過課税（所得割・任意）</span><span class="meta"><span class="unit">％</span></span></div>
+      <div class="field"><div class="label-row"><span class="title">市区町村の超過課税（任意）</span><span class="meta"><span class="unit">％</span></span></div>
         <input id="s3-muni-extra" inputmode="decimal" placeholder="例：0.10" /></div>
-
       <div class="field"><div class="label-row"><span class="title">不動産所得（任意）</span><span class="meta"><span class="unit">万円</span></span></div>
         <input id="s3-real" inputmode="numeric" placeholder="例：-20" /></div>
       <div class="field"><div class="label-row"><span class="title">事業・雑所得（任意）</span><span class="meta"><span class="unit">万円</span></span></div>
         <input id="s3-side" inputmode="numeric" placeholder="例：30" /></div>
     </div>
-
     <div class="actions"><button id="s3-calc">上限を計算</button></div>
     <div id="s3-summary" class="summary"></div>
     <div id="s3-out" class="result"></div>
@@ -367,7 +359,7 @@
 
 <footer class="wrap foot">
   <small>最終更新：<span id="last"></span> ／ © <span id="year"></span></small>
-  <div class="author">制作者：<b>XPXP-furujyu</b> </div>
+  <div class="author">制作者：<b>XPXP-furujyu</b></div>
 </footer>
 
 <script src="app.js"></script>
