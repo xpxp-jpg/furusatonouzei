@@ -7,6 +7,7 @@ h1{font-size:20px;margin:8px 0 10px}
 .card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:12px 0}
 .card>h2{font-size:16px;margin:0 0 8px}
 .reset-ghost{font-size:12px;border:1px dashed #b6c3da;background:#f7faff;color:#244;border-radius:999px;padding:6px 10px;cursor:pointer}
+.reset-ghost.small{font-size:11px;padding:6px 10px;margin-left:8px}
 .label-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}
 .title{font-size:14px}
 .meta .req{display:inline-block;font-size:12px;color:#b00;border:1px solid #f3b;padding:1px 6px;border-radius:999px}
@@ -15,7 +16,7 @@ input,select,textarea{width:100%;padding:10px 12px;border:1px solid #cfcfcf;bord
 .grid1{display:grid;grid-template-columns:1fr;gap:12px}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
-.actions{margin:12px 0}
+.actions{margin:12px 0;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .primary{background:var(--accent);color:#fff;border:0;border-radius:10px;padding:10px 14px;cursor:pointer}
 .result{display:none;background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px}
 .result.show{display:block}
@@ -24,9 +25,11 @@ input,select,textarea{width:100%;padding:10px 12px;border:1px solid #cfcfcf;bord
 .result .details{margin-top:10px;padding:10px;background:#fff;border:1px dashed #ccc;border-radius:10px;line-height:1.8}
 .result .disclaimer{margin-top:8px;font-size:12px;color:#666}
 .error-msg{color:#c40000;margin-top:8px}
-.error-input{border-color:#c40000!important;box-shadow:0 0 0 2px rgba(196,0,0,.1)}
+.error-input{border-color:#c40000!important;box-shadow:0 0 0 2px rgba(0,0,0,.08)}
 .hint{font-size:12px;color:#444;margin-top:-4px;margin-bottom:8px}
 .info{border:1px solid #cde;background:#eef5ff;color:#123;border-radius:50%;width:24px;height:24px;line-height:22px;text-align:center;font-weight:700;cursor:pointer}
 .popover{position:absolute;right:0;top:calc(100% + 6px);z-index:10;width:min(440px,92vw);background:#fff;border:1px solid #dbe2f7;border-radius:10px;padding:10px 12px;box-shadow:0 8px 22px rgba(0,0,0,.08)}
+.placeholder{height:44px}
+.footer{font-size:12px;color:#455;margin:10px 0 40px;display:flex;flex-direction:column;gap:6px}
 @media (max-width:760px){.grid3{grid-template-columns:1fr 1fr}}
 @media (max-width:540px){.grid2,.grid3{grid-template-columns:1fr}}
