@@ -3,129 +3,327 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ふるさと納税 × 住宅ローン控除 ツール（v4）</title>
-  <meta name="description" content="年収・年齢・住宅ローン情報から、ふるさと納税の上限額を簡易/精確に試算。ブラウザ内で計算・データ送信なし。" />
+  <title>ふるさと納税 × 住宅ローン控除 ツール（v6）</title>
+  <meta name="description" content="年収700万円以上の方向け。都道府県を含め精度を高めた上限試算。ブラウザ内で計算します。" />
   <link rel="stylesheet" href="styles.css" />
-  <style>.req{color:#d00;font-weight:600;margin-left:.25rem}.unit{color:#555;margin-left:.35rem;font-size:.9em}details>summary{cursor:pointer}</style>
 </head>
 <body>
-<header class="wrap">
+<header class="wrap topbar">
   <h1>ふるさと納税 × 住宅ローン控除</h1>
   <nav class="tabs">
-    <button data-tab="simple" class="active">ふるさと納税*住宅ローン控除(簡易)</button>
-    <button data-tab="precise">ふるさと納税*住宅ローン控除(精確)</button>
-    <button data-tab="plain">ふるさと納税</button>
+    <button data-tab="simple" class="active">簡易</button>
+    <button data-tab="precise">精確</button>
+    <button data-tab="plain">ローンなし</button>
   </nav>
 </header>
 
 <main class="wrap">
+  <!-- 簡易 -->
   <section id="tab-simple" class="tab active">
-    <h2>ふるさと納税*住宅ローン控除(簡易)</h2>
-    <p class="hint">※ 必須のみ。金額は <b>万円</b> 単位で入力してください。</p>
+    <div class="lead">年収700万円以上・住宅ローンありの方向けに最適化。</div>
     <div class="grid">
-      <label>年収<input id="s1-salary" inputmode="numeric" placeholder="例: 700"><span class="unit">万円</span><span class="req">必須</span></label>
-      <label>年齢<input id="s1-age" inputmode="numeric" placeholder="例: 37"><span class="req">必須</span></label>
+      <div class="field">
+        <div class="label-row">居住地（都道府県） <span class="req">必須</span></div>
+        <select id="s1-pref">
+<option value="北海道">北海道</option>
+<option value="青森県">青森県</option>
+<option value="岩手県">岩手県</option>
+<option value="宮城県">宮城県</option>
+<option value="秋田県">秋田県</option>
+<option value="山形県">山形県</option>
+<option value="福島県">福島県</option>
+<option value="茨城県">茨城県</option>
+<option value="栃木県">栃木県</option>
+<option value="群馬県">群馬県</option>
+<option value="埼玉県">埼玉県</option>
+<option value="千葉県">千葉県</option>
+<option value="東京都">東京都</option>
+<option value="神奈川県">神奈川県</option>
+<option value="新潟県">新潟県</option>
+<option value="富山県">富山県</option>
+<option value="石川県">石川県</option>
+<option value="福井県">福井県</option>
+<option value="山梨県">山梨県</option>
+<option value="長野県">長野県</option>
+<option value="岐阜県">岐阜県</option>
+<option value="静岡県">静岡県</option>
+<option value="愛知県">愛知県</option>
+<option value="三重県">三重県</option>
+<option value="滋賀県">滋賀県</option>
+<option value="京都府">京都府</option>
+<option value="大阪府">大阪府</option>
+<option value="兵庫県">兵庫県</option>
+<option value="奈良県">奈良県</option>
+<option value="和歌山県">和歌山県</option>
+<option value="鳥取県">鳥取県</option>
+<option value="島根県">島根県</option>
+<option value="岡山県">岡山県</option>
+<option value="広島県">広島県</option>
+<option value="山口県">山口県</option>
+<option value="徳島県">徳島県</option>
+<option value="香川県">香川県</option>
+<option value="愛媛県">愛媛県</option>
+<option value="高知県">高知県</option>
+<option value="福岡県">福岡県</option>
+<option value="佐賀県">佐賀県</option>
+<option value="長崎県">長崎県</option>
+<option value="熊本県">熊本県</option>
+<option value="大分県">大分県</option>
+<option value="宮崎県">宮崎県</option>
+<option value="鹿児島県">鹿児島県</option>
+<option value="沖縄県">沖縄県</option>
+</select>
+        <div class="note">一部自治体では所得割に微小な上乗せがあります（自動反映）。</div>
+      </div>
 
-      <label>借入開始（年）<input id="s1-start-y" inputmode="numeric" placeholder="例: 2024"><span class="req">必須</span></label>
-      <label>借入開始（月）<input id="s1-start-m" inputmode="numeric" placeholder="例: 4"><span class="req">必須</span></label>
-      <label>借入総額<input id="s1-principal" inputmode="numeric" placeholder="例: 4000"><span class="unit">万円</span><span class="req">必須</span></label>
-      <label>返済年数<input id="s1-years" inputmode="numeric" placeholder="例: 35"><span class="unit">年</span><span class="req">必須</span></label>
-      <label>年利<input id="s1-rate" inputmode="decimal" placeholder="例: 1.2"><span class="unit">%</span><span class="req">必須</span></label>
-      <label>利息計算方式
-        <select id="s1-method"><option>元利均等</option><option>元金均等</option></select>
-        <span class="req">必須</span>
-      </label>
+      <div class="field"><div class="label-row">年収 <span class="req">必須</span> <span class="unit">万円</span></div>
+        <input id="s1-salary" inputmode="numeric" placeholder="例：700" /></div>
+      <div class="field"><div class="label-row">年齢 <span class="req">必須</span></div>
+        <input id="s1-age" inputmode="numeric" placeholder="例：38" /></div>
 
-      <label>住宅区分
+      <div class="field"><div class="label-row">借入開始（年） <span class="req">必須</span></div>
+        <input id="s1-start-y" inputmode="numeric" placeholder="例：2023" /></div>
+      <div class="field"><div class="label-row">借入開始（月） <span class="req">必須</span></div>
+        <input id="s1-start-m" inputmode="numeric" placeholder="例：10" /></div>
+      <div class="field"><div class="label-row">借入総額 <span class="req">必須</span> <span class="unit">万円</span></div>
+        <input id="s1-principal" inputmode="numeric" placeholder="例：4500" /></div>
+      <div class="field"><div class="label-row">返済年数 <span class="req">必須</span> <span class="unit">年</span></div>
+        <input id="s1-years" inputmode="numeric" placeholder="例：35" /></div>
+      <div class="field"><div class="label-row">年利 <span class="req">必須</span> <span class="unit">%</span></div>
+        <input id="s1-rate" inputmode="decimal" placeholder="例：0.9" /></div>
+      <div class="field"><div class="label-row">利息計算方式 <span class="req">必須</span></div>
+        <select id="s1-method"><option>元利均等</option><option>元金均等</option></select></div>
+
+      <div class="field"><div class="label-row tip-row">住宅区分 <span class="req">必須</span>
+        <span class="q" data-tip="認定：長期優良・低炭素。ZEH：ゼロエネルギー。省エネ：基準適合。その他：上記以外。">?</span></div>
         <select id="s1-cat">
           <option value="認定">認定</option>
           <option value="ZEH">ZEH</option>
           <option value="省エネ" selected>省エネ</option>
           <option value="その他">その他</option>
-        </select>
-        <span class="req">必須</span>
-      </label>
-      <label>新築 / 中古
-        <select id="s1-newused"><option>新築</option><option>中古</option></select>
-        <span class="req">必須</span>
-      </label>
-      <label class="check"><input type="checkbox" id="s1-child"> 子育て・若者夫婦（任意）</label>
+        </select></div>
+      <div class="field"><div class="label-row">新築 / 中古 <span class="req">必須</span></div>
+        <select id="s1-newused"><option>新築</option><option>中古</option></select></div>
+      <div class="field"><div class="label-row">子育て・若者夫婦（任意）</div>
+        <label class="switch"><input type="checkbox" id="s1-child"><span>適用する</span></label></div>
 
-      <label>対象年（計算年）<input id="s1-target-y" inputmode="numeric" placeholder="例: 2025"><span class="req">必須</span></label>
+      <div class="field"><div class="label-row">対象年（計算年） <span class="req">必須</span></div>
+        <input id="s1-target-y" inputmode="numeric" placeholder="例：2025" /></div>
+
+      <div class="field"><div class="label-row">市区町村の超過課税（所得割・任意） <span class="unit">％</span></div>
+        <input id="s1-muni-extra" inputmode="decimal" placeholder="例：0.10（豊岡市など）" /></div>
     </div>
-    <div class="actions"><button id="s1-calc">計算する</button></div>
+
+    <div class="actions"><button id="s1-calc">上限を計算</button></div>
+    <div id="s1-summary" class="summary"></div>
     <div id="s1-out" class="result"></div>
   </section>
 
+  <!-- 精確 -->
   <section id="tab-precise" class="tab">
-    <h2>ふるさと納税*住宅ローン控除(精確)</h2>
-    <p class="hint">※ 必須のみ（e-Tax の数値が手元にあれば、<b>住民税所得割額（調整控除後）</b>を入力すると最も正確です）。金額は <b>万円</b>。</p>
+    <div class="lead">e-Taxの数値が手元になくても、都道府県を考慮した推定で算出。必要に応じて手入力に切替可。</div>
     <div class="grid">
-      <label>年収<input id="s2-salary" inputmode="numeric" placeholder="例: 700"><span class="unit">万円</span><span class="req">必須</span></label>
-      <label>年齢<input id="s2-age" inputmode="numeric" placeholder="例: 37"><span class="req">必須</span></label>
+      <div class="field"><div class="label-row">居住地（都道府県） <span class="req">必須</span></div>
+        <select id="s2-pref">
+<option value="北海道">北海道</option>
+<option value="青森県">青森県</option>
+<option value="岩手県">岩手県</option>
+<option value="宮城県">宮城県</option>
+<option value="秋田県">秋田県</option>
+<option value="山形県">山形県</option>
+<option value="福島県">福島県</option>
+<option value="茨城県">茨城県</option>
+<option value="栃木県">栃木県</option>
+<option value="群馬県">群馬県</option>
+<option value="埼玉県">埼玉県</option>
+<option value="千葉県">千葉県</option>
+<option value="東京都">東京都</option>
+<option value="神奈川県">神奈川県</option>
+<option value="新潟県">新潟県</option>
+<option value="富山県">富山県</option>
+<option value="石川県">石川県</option>
+<option value="福井県">福井県</option>
+<option value="山梨県">山梨県</option>
+<option value="長野県">長野県</option>
+<option value="岐阜県">岐阜県</option>
+<option value="静岡県">静岡県</option>
+<option value="愛知県">愛知県</option>
+<option value="三重県">三重県</option>
+<option value="滋賀県">滋賀県</option>
+<option value="京都府">京都府</option>
+<option value="大阪府">大阪府</option>
+<option value="兵庫県">兵庫県</option>
+<option value="奈良県">奈良県</option>
+<option value="和歌山県">和歌山県</option>
+<option value="鳥取県">鳥取県</option>
+<option value="島根県">島根県</option>
+<option value="岡山県">岡山県</option>
+<option value="広島県">広島県</option>
+<option value="山口県">山口県</option>
+<option value="徳島県">徳島県</option>
+<option value="香川県">香川県</option>
+<option value="愛媛県">愛媛県</option>
+<option value="高知県">高知県</option>
+<option value="福岡県">福岡県</option>
+<option value="佐賀県">佐賀県</option>
+<option value="長崎県">長崎県</option>
+<option value="熊本県">熊本県</option>
+<option value="大分県">大分県</option>
+<option value="宮崎県">宮崎県</option>
+<option value="鹿児島県">鹿児島県</option>
+<option value="沖縄県">沖縄県</option>
+</select></div>
 
-      <label>入居年（居住開始年）<input id="s2-movein-y" inputmode="numeric" placeholder="例: 2024"><span class="req">必須</span></label>
-      <label>対象年（計算年）<input id="s2-target-y" inputmode="numeric" placeholder="例: 2025"><span class="req">必須</span></label>
-      <label>年末残高<input id="s2-yearend" inputmode="numeric" placeholder="例: 3200"><span class="unit">万円</span><span class="req">必須</span></label>
+      <div class="field"><div class="label-row">年収 <span class="req">必須</span> <span class="unit">万円</span></div>
+        <input id="s2-salary" inputmode="numeric" placeholder="例：900" /></div>
+      <div class="field"><div class="label-row">年齢 <span class="req">必須</span></div>
+        <input id="s2-age" inputmode="numeric" placeholder="例：40" /></div>
 
-      <label>住宅区分
+      <div class="field"><div class="label-row">借入開始（年） <span class="req">必須</span></div>
+        <input id="s2-start-y" inputmode="numeric" placeholder="例：2022" /></div>
+      <div class="field"><div class="label-row">借入開始（月） <span class="req">必須</span></div>
+        <input id="s2-start-m" inputmode="numeric" placeholder="例：7" /></div>
+      <div class="field"><div class="label-row">借入総額 <span class="req">必須</span> <span class="unit">万円</span></div>
+        <input id="s2-principal" inputmode="numeric" placeholder="例：6000" /></div>
+      <div class="field"><div class="label-row">返済年数 <span class="req">必須</span> <span class="unit">年</span></div>
+        <input id="s2-years" inputmode="numeric" placeholder="例：35" /></div>
+      <div class="field"><div class="label-row">年利 <span class="req">必須</span> <span class="unit">%</span></div>
+        <input id="s2-rate" inputmode="decimal" placeholder="例：0.8" /></div>
+      <div class="field"><div class="label-row">利息計算方式 <span class="req">必須</span></div>
+        <select id="s2-method"><option>元利均等</option><option>元金均等</option></select></div>
+
+      <div class="field"><div class="label-row tip-row">住宅区分 <span class="req">必須</span>
+        <span class="q" data-tip="認定：長期優良・低炭素。ZEH：ゼロエネ。省エネ：適合。その他：上記以外。">?</span></div>
         <select id="s2-cat">
           <option value="認定">認定</option>
           <option value="ZEH">ZEH</option>
           <option value="省エネ" selected>省エネ</option>
           <option value="その他">その他</option>
-        </select>
-        <span class="req">必須</span>
-      </label>
-      <label>新築 / 中古
-        <select id="s2-newused"><option>新築</option><option>中古</option></select>
-        <span class="req">必須</span>
-      </label>
-      <label class="check"><input type="checkbox" id="s2-child"> 子育て・若者夫婦（任意）</label>
+        </select></div>
+      <div class="field"><div class="label-row">新築 / 中古 <span class="req">必須</span></div>
+        <select id="s2-newused"><option>新築</option><option>中古</option></select></div>
+      <div class="field"><div class="label-row">子育て・若者夫婦（任意）</div>
+        <label class="switch"><input type="checkbox" id="s2-child"><span>適用する</span></label></div>
 
-      <label>住民税所得割額（調整控除後）<input id="s2-R" inputmode="numeric" placeholder="例: 50"><span class="unit">万円</span><span class="req">必須</span></label>
+      <div class="field"><div class="label-row">対象年（計算年） <span class="req">必須</span></div>
+        <input id="s2-target-y" inputmode="numeric" placeholder="例：2025" /></div>
+
+      <!-- 自動→手入力切替群 -->
+      <div class="field">
+        <div class="label-row">年末残高（自動計算）<span class="unit">円</span>
+          <label class="toggle">手入力<input type="checkbox" id="s2-yb-manual"></label></div>
+        <input id="s2-yearend-auto" placeholder="自動計算…" disabled />
+        <input id="s2-yearend-man" placeholder="例：3200（万円）" class="alt" style="display:none" />
+      </div>
+
+      <div class="field">
+        <div class="label-row">住民税所得割額（自動計算・調整控除前相当）<span class="unit">円</span>
+          <label class="toggle">手入力<input type="checkbox" id="s2-R-manual"></label></div>
+        <input id="s2-R-auto" placeholder="自動計算…" disabled />
+        <input id="s2-R-man" placeholder="例：50（万円）" class="alt" style="display:none" />
+        <div class="note">※ 都道府県の所得割率と（任意）市区町村の上乗せを考慮した概算。e-Tax数値で上書き可。</div>
+      </div>
+
+      <div class="field"><div class="label-row">市区町村の超過課税（所得割・任意） <span class="unit">％</span></div>
+        <input id="s2-muni-extra" inputmode="decimal" placeholder="例：0.10（豊岡市など）" /></div>
+
+      <div class="field"><div class="label-row">不動産所得（任意） <span class="unit">万円</span></div>
+        <input id="s2-real" inputmode="numeric" placeholder="例：-30" /></div>
+      <div class="field"><div class="label-row">事業・雑所得（任意） <span class="unit">万円</span></div>
+        <input id="s2-side" inputmode="numeric" placeholder="例：50" /></div>
+      <div class="field"><div class="label-row">所得税額（控除前・任意） <span class="unit">万円</span></div>
+        <input id="s2-itax" inputmode="numeric" placeholder="例：160" /></div>
     </div>
 
-    <details style="margin:10px 0;">
-      <summary>选填 / 高级（没有 e-Tax 数值时可用来近似）</summary>
-      <div class="grid">
-        <label>不動産所得（合計）<input id="s2-real" inputmode="numeric" placeholder="例: -50"><span class="unit">万円</span></label>
-        <label>事業・雑所得（合計）<input id="s2-side" inputmode="numeric" placeholder="例: 80"><span class="unit">万円</span></label>
-        <label>所得税額（控除前・任意）<input id="s2-itax" inputmode="numeric" placeholder="例: 120"><span class="unit">万円</span></label>
-      </div>
-      <p class="hint">※ 填写上面三项可以在缺少 e-Tax 详细时更贴近真实；如提供了「所得税額（控除前）」则优先使用它。</p>
-    </details>
-
-    <div class="actions"><button id="s2-calc">計算する</button></div>
+    <div class="actions"><button id="s2-calc">上限を計算</button></div>
+    <div id="s2-summary" class="summary"></div>
     <div id="s2-out" class="result"></div>
   </section>
 
+  <!-- ローンなし -->
   <section id="tab-plain" class="tab">
-    <h2>ふるさと納税（住宅ローンなし）</h2>
-    <p class="hint">※ 必須のみ。金額は <b>万円</b>。</p>
+    <div class="lead">ローンが無い場合の上限。都道府県・（任意）市区町村上乗せを考慮。</div>
     <div class="grid">
-      <label>年収<input id="s3-salary" inputmode="numeric" placeholder="例: 700"><span class="unit">万円</span><span class="req">必須</span></label>
-      <label>年齢<input id="s3-age" inputmode="numeric" placeholder="例: 37"><span class="req">必須</span></label>
-      <label>住民税所得割額（調整控除後）<input id="s3-R" inputmode="numeric" placeholder="例: 50"><span class="unit">万円</span><span class="req">必須</span></label>
+      <div class="field"><div class="label-row">居住地（都道府県） <span class="req">必須</span></div>
+        <select id="s3-pref">
+<option value="北海道">北海道</option>
+<option value="青森県">青森県</option>
+<option value="岩手県">岩手県</option>
+<option value="宮城県">宮城県</option>
+<option value="秋田県">秋田県</option>
+<option value="山形県">山形県</option>
+<option value="福島県">福島県</option>
+<option value="茨城県">茨城県</option>
+<option value="栃木県">栃木県</option>
+<option value="群馬県">群馬県</option>
+<option value="埼玉県">埼玉県</option>
+<option value="千葉県">千葉県</option>
+<option value="東京都">東京都</option>
+<option value="神奈川県">神奈川県</option>
+<option value="新潟県">新潟県</option>
+<option value="富山県">富山県</option>
+<option value="石川県">石川県</option>
+<option value="福井県">福井県</option>
+<option value="山梨県">山梨県</option>
+<option value="長野県">長野県</option>
+<option value="岐阜県">岐阜県</option>
+<option value="静岡県">静岡県</option>
+<option value="愛知県">愛知県</option>
+<option value="三重県">三重県</option>
+<option value="滋賀県">滋賀県</option>
+<option value="京都府">京都府</option>
+<option value="大阪府">大阪府</option>
+<option value="兵庫県">兵庫県</option>
+<option value="奈良県">奈良県</option>
+<option value="和歌山県">和歌山県</option>
+<option value="鳥取県">鳥取県</option>
+<option value="島根県">島根県</option>
+<option value="岡山県">岡山県</option>
+<option value="広島県">広島県</option>
+<option value="山口県">山口県</option>
+<option value="徳島県">徳島県</option>
+<option value="香川県">香川県</option>
+<option value="愛媛県">愛媛県</option>
+<option value="高知県">高知県</option>
+<option value="福岡県">福岡県</option>
+<option value="佐賀県">佐賀県</option>
+<option value="長崎県">長崎県</option>
+<option value="熊本県">熊本県</option>
+<option value="大分県">大分県</option>
+<option value="宮崎県">宮崎県</option>
+<option value="鹿児島県">鹿児島県</option>
+<option value="沖縄県">沖縄県</option>
+</select></div>
+
+      <div class="field"><div class="label-row">年収 <span class="req">必須</span> <span class="unit">万円</span></div>
+        <input id="s3-salary" inputmode="numeric" placeholder="例：700" /></div>
+      <div class="field"><div class="label-row">年齢 <span class="req">必須</span></div>
+        <input id="s3-age" inputmode="numeric" placeholder="例：38" /></div>
+
+      <div class="field">
+        <div class="label-row">住民税所得割額（自動計算・調整控除前相当）<span class="unit">円</span>
+          <label class="toggle">手入力<input type="checkbox" id="s3-R-manual"></label></div>
+        <input id="s3-R-auto" placeholder="自動計算…" disabled />
+        <input id="s3-R-man" placeholder="例：50（万円）" class="alt" style="display:none" />
+      </div>
+
+      <div class="field"><div class="label-row">市区町村の超過課税（所得割・任意） <span class="unit">％</span></div>
+        <input id="s3-muni-extra" inputmode="decimal" placeholder="例：0.10" /></div>
+
+      <div class="field"><div class="label-row">不動産所得（任意） <span class="unit">万円</span></div>
+        <input id="s3-real" inputmode="numeric" placeholder="例：-20" /></div>
+      <div class="field"><div class="label-row">事業・雑所得（任意） <span class="unit">万円</span></div>
+        <input id="s3-side" inputmode="numeric" placeholder="例：30" /></div>
     </div>
 
-    <details style="margin:10px 0;">
-      <summary>选填 / 高级</summary>
-      <div class="grid">
-        <label>不動産所得（合計）<input id="s3-real" inputmode="numeric" placeholder="例: -50"><span class="unit">万円</span></label>
-        <label>事業・雑所得（合計）<input id="s3-side" inputmode="numeric" placeholder="例: 80"><span class="unit">万円</span></label>
-        <label>所得税額（控除前・任意）<input id="s3-itax" inputmode="numeric" placeholder="例: 120"><span class="unit">万円</span></label>
-      </div>
-    </details>
-
-    <div class="actions"><button id="s3-calc">計算する</button></div>
+    <div class="actions"><button id="s3-calc">上限を計算</button></div>
+    <div id="s3-summary" class="summary"></div>
     <div id="s3-out" class="result"></div>
   </section>
 </main>
 
 <footer class="wrap foot">
-  <div><a href="privacy.html">プライバシー</a>｜<a href="disclaimer.html">免責</a>｜<a href="about.html">運営者</a></div>
-  <small>最終更新: <span id="last"></span> ｜ © <span id="year"></span></small>
+  <small>最終更新：<span id="last"></span> ／ © <span id="year"></span></small>
 </footer>
 
 <script src="app.js"></script>
