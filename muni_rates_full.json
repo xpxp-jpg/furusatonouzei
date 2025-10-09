@@ -1,26 +1,14 @@
 {
-  "last_updated": "2025-10-08",
-  "notes": "標準税率(計10%)に対し、超過/独自率がある自治体のみを列挙。数値は総所得割に対する加減点（＋0.001=+0.1%）として扱います。",
+  "last_updated": "2025-10-09",
+  "notes": "標準税率(合計10%)に対する超過/独自率。+0.001=+0.1%。均等割超過課税は含めません。",
   "sources": [
     {
-      "name": "横浜市「個人の市民税・県民税について」",
-      "url": "https://www.city.yokohama.lg.jp/kurashi/koseki-zei-hoken/zeikin/y-shizei/kojin-shiminzei-kenminzei/kojin-shiminzei-shosai/kojin.html",
-      "verified": "2025-10-08 JST"
+      "name": "横浜市 公式（県民税の超過課税）",
+      "url": "https://www.city.yokohama.lg.jp/"
     },
     {
-      "name": "豊岡市「市民税」",
-      "url": "https://www.city.toyooka.lg.jp/kurashi/zeikin/shizei/1019701/1000790.html",
-      "verified": "2025-10-08 JST"
-    },
-    {
-      "name": "内閣府 資料（個人住民税）",
-      "url": "https://www.cao.go.jp/zei-cho/content/4zen17kai3.pdf",
-      "verified": "2025-10-08 JST"
-    },
-    {
-      "name": "Impress Watch 特集（補足）",
-      "url": "https://internet.watch.impress.co.jp/docs/special/1430666.html",
-      "verified": "2025-10-08 JST"
+      "name": "豊岡市 公式（市民税6.1%）",
+      "url": "https://www.city.toyooka.lg.jp/"
     }
   ],
   "pref_extra": {

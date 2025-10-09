@@ -2,22 +2,27 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ふるさと納税 × 住宅ローン控除 シミュレーション v8.2（精確・単一画面）</title>
-<meta name="description" content="年収・年齢・居住地・扶養/配偶・住宅ローン条件をもとに、ふるさと納税の限度額を精確に推定します。">
-<link rel="stylesheet" href="styles.css?v=8.2">
+<title>ふるさと納税 × 住宅ローン控除 シミュレーション v8.2（AdSafe改修）</title>
+<meta name="description" content="年収・年齢・居住地・扶養/配偶・住宅ローン条件をもとに、ふるさと納税の限度額を精確に推定します。全国の『住民税（所得割）の超過課税』データを反映。">
+<link rel="stylesheet" href="styles.css?v=8.2a">
+<script src="config.js?v=8.2a"></script>
 <!-- GA4 -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-YS6NM3C8KG"></script>
-<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)};gtag('js',new Date());gtag('config','G-YS6NM3C8KG');</script>
-<!-- AdSense Auto Ads -->
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5317898094646973" crossorigin="anonymous"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)};gtag('js',new Date());gtag('config',window.GA4_ID||'G-YS6NM3C8KG');</script>
 </head>
 <body>
-<header class="wrap header-row">
+<header class="wrap header-row adsense-auto-ads-ignore">
   <div class="left"><h1>ふるさと納税 × 住宅ローン控除 シミュレーション</h1></div>
+  <nav class="topnav">
+    <a href="index.html">計算ツール</a>
+    <a href="guide.html">計算根拠</a>
+    <a href="privacy.html">プライバシー</a>
+    <a href="terms.html">利用規約</a>
+  </nav>
 </header>
 
 <main class="wrap">
-  <section class="card" id="sec-personal">
+  <section class="card adsense-auto-ads-ignore" id="sec-personal">
     <h2>① 個人情報</h2>
     <div class="grid2">
       <div class="field"><div class="label-row"><span class="title">都道府県</span><span class="meta"><span class="req">必須</span></span></div>
@@ -47,7 +52,7 @@
     </div>
   </section>
 
-  <section class="card" id="sec-family">
+  <section class="card adsense-auto-ads-ignore" id="sec-family">
     <h2>② 家族・扶養</h2>
     <div class="grid3">
       <div class="field"><div class="label-row"><span class="title">配偶者の合計所得金額（万円）</span><span class="meta"><span class="req">必須</span></span></div><input id="spIncome" inputmode="decimal" value="0" placeholder="いない場合は 0"></div>
@@ -61,7 +66,7 @@
     </div>
   </section>
 
-  <section class="card" id="sec-mortgage">
+  <section class="card adsense-auto-ads-ignore" id="sec-mortgage">
     <h2>③ 住宅ローン</h2>
     <div class="grid3">
       <div class="field"><div class="label-row"><span class="title">借入開始年月</span><span class="meta"><span class="req">必須</span></span></div><input id="startYM" inputmode="numeric" placeholder="YYYY-MM または YYYYMM"></div>
@@ -76,12 +81,9 @@
         <div id="cat-tip" class="popover" hidden><b>住宅区分の目安</b><br>認定：認定長期優良住宅・低炭素住宅など。<br>ZEH：ネット・ゼロ・エネルギー・ハウス。<br>省エネ：省エネ基準適合。<br>その他：上記以外。</div>
       </div>
     </div>
-    <div class="grid1">
-      <div class="field"><div class="label-row"><span class="title">新築・中古（任意）</span></div><select id="newused"><option value="" selected>— 選択なし —</option><option>新築</option><option>中古</option></select></div>
-    </div>
   </section>
 
-  <section class="card" id="sec-calc">
+  <section class="card adsense-auto-ads-ignore" id="sec-calc">
     <h2>④ 計算 &amp; 結果</h2>
     <div class="grid1">
       <div class="field"><div class="label-row"><span class="title">住民税所得割額（自動計算）（調整控除前相当）（円）</span><span class="meta"><label class="toggle nowrap">手入力 <input type="checkbox" id="R-manual"></label></span></div>
@@ -100,15 +102,17 @@
       <div class="big" id="dmax"></div>
       <button class="more" id="more" aria-expanded="false">詳細を見る</button>
       <div class="details" id="details" style="display:none"></div>
+      <!-- 手動広告：結果があるときのみ表示 -->
+      <div id="ad-after-result" class="adbox" hidden></div>
       <div class="disclaimer">※ 本シミュレーションは概算です。実際の控除・上限は税制・個別要件等により異なる場合があります。</div>
     </div>
   </section>
 </main>
 
-<footer class="wrap footer">
+<footer class="wrap footer adsense-auto-ads-ignore">
   <div id="updateInfo">データ最終更新：—</div>
-  <div class="src">出典：各自治体公式発表・内閣府資料等（本ページ下部の JSON をご確認ください）</div>
+  <div class="src">出典：各自治体公式発表・内閣府資料等。詳細は「<a href="guide.html">計算根拠</a>」へ。</div>
 </footer>
 
-<script src="app.js?v=8.2"></script>
+<script src="app.js?v=8.2a"></script>
 </body></html>

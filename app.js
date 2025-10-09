@@ -11,13 +11,14 @@ function pctStr(v){return (Math.round(v*1000)/1000)+'%'}
 const BASIC_IT=480000,BASIC_RES=430000;
 function salDed(g){if(g<=1625000)return 550000;if(g<=1800000)return g*0.40-100000;if(g<=3600000)return g*0.30+80000;if(g<=6600000)return g*0.20+440000;if(g<=8500000)return g*0.10+1100000;return 1950000}
 function socIns(g,age){const r=age<40?0.15:(age<=64?0.165:0.14);return Math.round(g*r)}
+
 function depDed_RES(gen,spec,elderSame,elderOther){return 330000*gen+450000*spec+450000*elderSame+380000*elderOther}
 function depDed_IT(gen,spec,elderSame,elderOther){return 380000*gen+630000*spec+580000*elderSame+480000*elderOther}
 function spDed_RES(sp){if(sp<=480000)return 330000;if(sp<1330000){const t=(1330000-sp)/(1330000-480000);return Math.floor(330000*t)}return 0}
 function spDed_IT(sp){if(sp<=480000)return 380000;if(sp<1330000){const t=(1330000-sp)/(1330000-480000);return Math.floor(380000*t)}return 0}
 
-let PREF_EXTRA={}; // e.g. {"神奈川県":0.00025}
-let MUNI_EXTRA={}; // e.g. {"兵庫県":{"豊岡市":0.001}}
+let PREF_EXTRA={"神奈川県":0.00025};
+let MUNI_EXTRA={"兵庫県":{"豊岡市":0.001}};
 let LAST_UPDATED='—';
 
 function normCity(s){return (''+(s||'')).trim().replace(/\s+/g,'').replace(/(都|道|府|県)/,'').replace(/^(.*?市).*$/,'$1').replace(/^(.*?区).*$/,'$1')}
@@ -29,10 +30,9 @@ function limitFs(tIncl,R,loanRes){const capA=.20*R,capB=Math.max(R-loanRes,0),d1
 
 function err(msg,ids){const area=document.getElementById('err');area.textContent=msg;area.style.display='block';(ids||[]).forEach(id=>{const el=document.getElementById(id);if(el)el.classList.add('error-input')});if(ids&&ids.length){const e=document.getElementById(ids[0]);if(e&&e.scrollIntoView)e.scrollIntoView({behavior:'smooth',block:'center'})}}
 function clearErr(){document.getElementById('err').style.display='none';document.querySelectorAll('.error-input').forEach(x=>x.classList.remove('error-input'))}
-function showResult(amt,html){const big=document.getElementById('dmax'),btn=document.getElementById('more'),det=document.getElementById('details'),box=document.getElementById('resultBox');big.textContent='ふるさと納税限度額：'+J(amt)+' 円';btn.onclick=()=>{const open=det.style.display==='none';det.style.display=open?'block':'none';btn.setAttribute('aria-expanded',open?'true':'false')};det.innerHTML=html;box.classList.add('show')}
-function showHint(){const pref=document.getElementById('pref').value,city=document.getElementById('city').value||'';document.getElementById('extra-hint').textContent='上乗せ率（所得割）（自動）：'+pctStr(rateExtra(pref,city))}
+function showResult(amt,html){const big=document.getElementById('dmax'),btn=document.getElementById('more'),det=document.getElementById('details'),box=document.getElementById('resultBox');big.textContent='ふるさと納税限度額：'+J(amt)+' 円';btn.onclick=()=>{const open=det.style.display==='none';det.style.display=open?'block':'none';btn.setAttribute('aria-expanded',open?'true':'false')};det.innerHTML=html;box.classList.add('show');renderInResultAd();}
+function showHint(){const pref=document.getElementById('pref').value,city=document.getElementById('city').value||'';document.getElementById('extra-hint').textContent='上乗せ率（所得割）（自動）：'+pctStr(rateExtra(pref,city)*100)}
 
-// live preview
 function updatePreview(){
   try{
     const salary=num(document.getElementById('salary').value)*10000;
@@ -94,6 +94,36 @@ function compute(){
   showResult(D,`年末残高：${J(bal)} 円 ／ 年間控除：${J(credit)} 円 ／ 住民税側控除：${J(loanRes)} 円<br>R：${J(Rv)} 円（自動計算） ／ 所得税課税所得：${J(tb)} 円 ／ 上乗せ率：${pctStr(rateExtra(pref,city)*100)}`);
 }
 
+// 仅在结果出现时，按需加载并渲染广告
+function ensureAdsScript(){
+  if(window._adsScriptLoaded) return;
+  const s=document.createElement('script');
+  s.async=true;
+  s.src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client='+(window.AD_CLIENT||'');
+  s.crossOrigin='anonymous';
+  document.head.appendChild(s);
+  window._adsScriptLoaded=true;
+}
+function renderInResultAd(){
+  const slot=window.AD_SLOT_ID||'';
+  const client=window.AD_CLIENT||'';
+  const box=document.getElementById('ad-after-result');
+  if(!box || !client || !slot){ return; } // 未设置slot则不渲染
+  ensureAdsScript();
+  box.innerHTML='';
+  const ins=document.createElement('ins');
+  ins.className='adsbygoogle';
+  ins.style.display='block';
+  ins.style.minHeight='250px';
+  ins.setAttribute('data-ad-client', client);
+  ins.setAttribute('data-ad-slot', slot);
+  ins.setAttribute('data-ad-format','auto');
+  ins.setAttribute('data-full-width-responsive','true');
+  box.appendChild(ins);
+  box.hidden=false;
+  try{ (adsbygoogle = window.adsbygoogle || []).push({}); }catch(e){}
+}
+
 function populateCities(){
   const pref=document.getElementById('pref').value;
   const list=document.getElementById('city-list'); list.innerHTML='';
@@ -103,10 +133,9 @@ function populateCities(){
 
 async function loadMuniDict(){
   try{
-    const res=await fetch('muni_rates_full.json?v=8.2'); if(!res.ok)throw 0;
+    const res=await fetch('muni_rates_full.json?v=8.2a'); if(!res.ok)throw 0;
     const data=await res.json();
     PREF_EXTRA=data.pref_extra||{}; MUNI_EXTRA=data.muni_extra||{}; LAST_UPDATED=data.last_updated||'—';
-    // footer
     const upd=document.getElementById('updateInfo'); if(upd)upd.textContent='データ最終更新：'+LAST_UPDATED;
   }catch(e){}
   populateCities(); showHint();
